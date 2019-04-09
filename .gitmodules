@@ -1,0 +1,3 @@
+[submodule "iceberg.vim"]
+	path = iceberg.vim
+	url = https://github.com/cocopon/iceberg.vim.git
