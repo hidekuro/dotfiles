@@ -11,3 +11,6 @@
 [core]
 	autocrlf = false
 	safecrlf = true
+[pager]
+	branch = cat
+	config = cat
