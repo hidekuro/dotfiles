@@ -15,10 +15,16 @@ colors
 # bindkey -e
 
 # ヒストリの設定
-HISTFILE=~/.zsh_history
-HISTSIZE=1000000
-SAVEHIST=1000000
 export HISTCONTROL=ignoreboth
+HISTFILE=~/.zsh_history
+HISTSIZE=500000
+SAVEHIST=500000
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_FIND_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_NO_STORE
 
 # プロンプト
 # '[user@host] /path/to/current% '
