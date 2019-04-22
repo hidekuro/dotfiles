@@ -162,3 +162,5 @@ esac
 export LESS="-i -g -R -M"
 
 # vim:set ft=zsh:
+
+[[ -e ~/.zshrc.local ]] && . ~/.zshrc.local
