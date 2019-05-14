@@ -18,4 +18,7 @@ esac
 
 ########################################
 # 環境変数
-export LESS="-i -g -R -M"
+export LESS="-igSRM"
+
+# ローカル設定があれば優先
+[[ -e ~/.bashrc.local ]] && . ~/.bashrc.local

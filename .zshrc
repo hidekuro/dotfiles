@@ -159,8 +159,9 @@ esac
 
 ########################################
 # 環境変数
-export LESS="-i -g -R -M"
+export LESS="-igSRM"
+
+# ローカル設定があれば優先
+[[ -e ~/.zshrc.local ]] && . ~/.zshrc.local
 
 # vim:set ft=zsh:
-
-[[ -e ~/.zshrc.local ]] && . ~/.zshrc.local
