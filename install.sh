@@ -9,7 +9,9 @@ if (type zsh > /dev/null 2>&1); then
   fi
 fi
 
-git clone --recurse-submodules https://github.com/hidekuro/dotfiles.git ~/.dotfiles
+if [[ ! -d ~/.dotfiles ]]; then
+  git clone --recurse-submodules https://github.com/hidekuro/dotfiles.git ~/.dotfiles
+fi
 
 mkdir -p ~/.vim/colors
 ln -snf ~/.dotfiles/iceberg.vim/colors/iceberg.vim ~/.vim/colors/iceberg.vim
