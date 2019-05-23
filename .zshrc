@@ -159,7 +159,7 @@ esac
 
 ########################################
 # 環境変数
-export LESS="-igSRM"
+export LESS="-igSNRM"
 
 # ローカル設定があれば優先
 [[ -e ~/.zshrc.local ]] && . ~/.zshrc.local
