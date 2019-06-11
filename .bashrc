@@ -4,13 +4,13 @@ alias ll='ls -AFhl'
 alias sudo='sudo '
 
 case ${OSTYPE} in
-    darwin*)
-        export CLICOLOR=1
-        alias ls='ls -G -F'
-        ;;
-    linux*)
-        alias ls='ls -F --color'
-        ;;
+  darwin*)
+    export CLICOLOR=1
+    alias ls='ls -G -F'
+    ;;
+  linux*)
+    alias ls='ls -F --color'
+    ;;
 esac
 
 # ローカル設定があれば優先

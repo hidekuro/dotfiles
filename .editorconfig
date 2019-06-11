@@ -9,23 +9,14 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 tab_width = 4
 
-[*.sh]
+[*rc]
 indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{yml,yaml}]
+[*.{js,ts,json,py,rb,sh,md,yml,yaml}]
 indent_size = 2
 
-[*.json]
-indent_size = 2
-
-[*.py]
-indent_size = 2
-
-[*.rb]
-indent_size = 2
-
-[Vagrantfile]
+[{Vagrantfile,Dockerfile}]
 indent_size = 2

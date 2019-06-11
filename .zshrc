@@ -43,10 +43,10 @@ zstyle ':zle:*' word-style unspecified
 # 補完
 # 補完機能を有効にする
 fpath=(
-    /usr/local/share/zsh-completions
-    /usr/share/zsh/site-functions
-    ~/.zsh/completion
-    $fpath
+  /usr/local/share/zsh-completions
+  /usr/share/zsh/site-functions
+  ~/.zsh/completion
+  $fpath
 )
 autoload -Uz compinit
 compinit -u
@@ -58,8 +58,14 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' ignore-parents parent pwd ..
 
 # sudo の後ろでコマンド名を補完する
-zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
-                   /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
+zstyle ':completion:*:sudo:*' command-path \
+    /usr/local/sbin \
+    /usr/local/bin \
+    /usr/sbin \
+    /usr/bin \
+    /sbin \
+    /bin \
+    /usr/X11R6/bin
 
 # ps コマンドのプロセス名補完
 zstyle ':completion:*:processes' command 'ps x -o pid,s,args'
@@ -76,9 +82,9 @@ autoload -Uz vcs_info
 zstyle ':vcs_info:*' formats '(%s)-[%b]'
 zstyle ':vcs_info:*' actionformats '(%s)-[%b|%a]'
 precmd () {
-    psvar=()
-    LANG=en_US.UTF-8 vcs_info
-    [[ -n "$vcs_info_msg_0_" ]] && psvar[1]="$vcs_info_msg_0_"
+  psvar=()
+  LANG=en_US.UTF-8 vcs_info
+  [[ -n "$vcs_info_msg_0_" ]] && psvar[1]="$vcs_info_msg_0_"
 }
 RPROMPT="%1(v|%F{green}%1v%f|)"
 
@@ -145,13 +151,13 @@ alias ll='ls -AFhl'
 alias sudo='sudo '
 
 case ${OSTYPE} in
-    darwin*)
-        export CLICOLOR=1
-        alias ls='ls -G -F'
-        ;;
-    linux*)
-        alias ls='ls -F --color'
-        ;;
+  darwin*)
+    export CLICOLOR=1
+    alias ls='ls -G -F'
+    ;;
+  linux*)
+    alias ls='ls -F --color'
+    ;;
 esac
 
 # ローカル設定があれば優先
