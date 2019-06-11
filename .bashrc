@@ -1,3 +1,7 @@
+if [ -f /etc/bashrc ]; then
+  source /etc/bashrc
+fi
+
 ########################################
 # エイリアス
 alias ll='ls -AFhl'
