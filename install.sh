@@ -19,6 +19,7 @@ ln -snf ~/.dotfiles/.vimrc ~/.vimrc
 ln -snf ~/.dotfiles/.aliases ~/.aliases
 ln -snf ~/.dotfiles/.bashrc ~/.bashrc
 touch ~/.bashrc.local
+touch ~/.aliases
 
 cp -n ~/.dotfiles/.gitconfig ~/.gitconfig
 cp -n ~/.dotfiles/.gitignore_global ~/.gitignore_global
