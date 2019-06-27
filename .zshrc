@@ -147,21 +147,26 @@ bindkey '^R' history-incremental-pattern-search-backward
 
 ########################################
 # エイリアス
-alias ll='ls -AFhl'
+alias ll='ls -Ahl'
 alias sudo='sudo '
 
 case ${OSTYPE} in
   darwin*)
     export CLICOLOR=1
-    alias ls='ls -G -F'
+
+    if (type gls 2>&1 > /dev/null); then
+      alias ls='ls -F --color=auto'
+    else
+      alias ls='ls -G -F'
+    fi
     ;;
   linux*)
-    alias ls='ls -F --color'
+    alias ls='ls -F --color=auto'
     ;;
 esac
 
 # ローカル設定があれば優先
-[[ -e ~/.aliases ]] && . ~/.aliases
+[[ -e ~/.aliases.local ]] && . ~/.aliases.local
 
 ########################################
 # 環境変数
