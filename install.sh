@@ -35,10 +35,12 @@ if (type zsh > /dev/null 2>&1); then
   # zsh-completions
   if [[ "${OSTYPE}" = darwin* ]]; then
     brew install zsh zsh-completions
-  elif [[ "${OSTYPE}" = linux* ]]; then
+  elif [[ ! -e /usr/local/share/zsh-completions ]]; then
+    if [[ "${OSTYPE}" = linux* ]]; then
     sudo git clone https://github.com/zsh-users/zsh-completions /usr/local/share/zsh-completions
-  elif [[ "${OSTYPE}" = msys ]]; then
-    mkdir -p /usr/local/share
-    git clone https://github.com/zsh-users/zsh-completions /usr/local/share/zsh-completions
+    elif [[ "${OSTYPE}" = msys ]]; then
+      mkdir -p /usr/local/share
+      git clone https://github.com/zsh-users/zsh-completions /usr/local/share/zsh-completions
+    fi
   fi
 fi
