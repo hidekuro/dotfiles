@@ -163,6 +163,9 @@ case ${OSTYPE} in
   linux*)
     alias ls='ls -F --color=auto'
     ;;
+  msys*)
+    alias ls='ls -F --color=auto'
+    ;;
 esac
 
 # ローカル設定があれば優先
