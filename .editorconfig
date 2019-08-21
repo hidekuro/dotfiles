@@ -18,7 +18,7 @@ trim_trailing_whitespace = false
 [*.{js,ts,json,py,rb,sh,md,yml,yaml}]
 indent_size = 2
 
-[{Vagrantfile,Dockerfile}]
+[{Vagrantfile,Dockerfile,Dockerfile.*}]
 indent_size = 2
 
 [{Makefile,*.mk}]
