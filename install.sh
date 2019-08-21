@@ -21,6 +21,9 @@ ln -snf ~/.dotfiles/.aliases ~/.aliases
 cp -n ~/.dotfiles/.gitconfig ~/.gitconfig
 cp -n ~/.dotfiles/.gitignore_global ~/.gitignore_global
 
+# editorconfig
+ln -snf ~/.dotfiles/.editorconfig ~/.editorconfig
+
 # brew
 if (type brew > /dev/null 2>&1); then
   ln -snf ~/.dotfiles/Brewfile ~/Brewfile
