@@ -44,6 +44,7 @@ zstyle ':zle:*' word-style unspecified
 # 補完機能を有効にする
 fpath=(
   /usr/local/share/zsh-completions
+  /usr/local/share/zsh/site-functions
   /usr/share/zsh/site-functions
   ~/.zsh/completion
   $fpath
