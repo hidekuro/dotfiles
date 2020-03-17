@@ -5,7 +5,7 @@ HOME="${ZDOTFILE:-$HOME}"
 
 setopt extended_glob
 setopt clobber
-unalias -a
+unalias -m '*'
 
 git submodule update --init --recursive
 
