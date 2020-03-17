@@ -1,49 +1,39 @@
-if [[ ! -d ~/.dotfiles ]]; then
-  git clone --recurse-submodules https://github.com/hidekuro/dotfiles.git ~/.dotfiles
-fi
+#!/bin/zsh
+cd $(dirname $0)
+DOTFILES_DIR=$(pwd)
+HOME="${ZDOTFILE:-$HOME}"
+
+git submodule update --init --recursive
+
+# install prezto.
+ln -snf $DOTFILES_DIR/prezto $HOME/.zprezto
+setopt extended_glob
+for rcfile in $DOTFILES_DIR/prezto/runcoms/^README.md(.N); do
+  ln -snf "$rcfile" "$HOME/.${rcfile:t}"
+done
+
+# remove or replace some runcoms to get the desired behavior.
+ln -snf $DOTFILES_DIR/prezto-override/zpreztorc $HOME/.zpreztorc
+ln -snf $DOTFILES_DIR/prezto-override/zprofile $HOME/.zprofile
+ln -snf $DOTFILES_DIR/prezto-override/zshenv $HOME/.zshenv
+rm -f $HOME/.zlogout
+rm -f $HOME/.zshrc
+cp -f $DOTFILES_DIR/prezto/runcoms/zshrc $HOME/.zshrc
+cat $DOTFILES_DIR/prezto-override/zshrc >> $HOME/.zshrc
 
 # vim
-mkdir -p ~/.vim/colors
-ln -snf ~/.dotfiles/iceberg.vim/colors/iceberg.vim ~/.vim/colors/iceberg.vim
-ln -snf ~/.dotfiles/.vimrc ~/.vimrc
-
-# bashrc
-ln -snf ~/.dotfiles/.bashrc ~/.bashrc
-touch ~/.bashrc.local
-
-# aliases
-if [[ -e ~/.aliases && ! -e ~/.aliases.local ]]; then
-  cat ~/.aliases >> ~/.aliases.local
-fi
-ln -snf ~/.dotfiles/.aliases ~/.aliases
+mkdir -pv $HOME/.vim/colors
+ln -snf $DOTFILES_DIR/iceberg.vim/colors/iceberg.vim $HOME/.vim/colors/iceberg.vim
+ln -snf $DOTFILES_DIR/vimrc $HOME/.vimrc
 
 # git
-cp -n ~/.dotfiles/.gitconfig ~/.gitconfig
-cp -n ~/.dotfiles/.gitignore_global ~/.gitignore_global
+cp -f $DOTFILES_DIR/gitconfig $HOME/.gitconfig
+cp -f $DOTFILES_DIR/gitignore_global $HOME/.gitignore_global
 
 # editorconfig
-ln -snf ~/.dotfiles/.editorconfig ~/.editorconfig
+ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
 
 # brew
 if (type brew > /dev/null 2>&1); then
-  ln -snf ~/.dotfiles/Brewfile ~/Brewfile
-fi
-
-# zsh
-if (type zsh > /dev/null 2>&1); then
-  ln -snf ~/.dotfiles/.zshrc ~/.zshrc
-  touch ~/.zshenv
-  touch ~/.zshrc.local
-
-  # zsh-completions
-  if [[ "${OSTYPE}" = darwin* ]]; then
-    brew install zsh zsh-completions
-  elif [[ ! -e /usr/local/share/zsh-completions ]]; then
-    if [[ "${OSTYPE}" = linux* ]]; then
-    sudo git clone https://github.com/zsh-users/zsh-completions /usr/local/share/zsh-completions
-    elif [[ "${OSTYPE}" = msys ]]; then
-      mkdir -p /usr/local/share
-      git clone https://github.com/zsh-users/zsh-completions /usr/local/share/zsh-completions
-    fi
-  fi
+  ln -snf $DOTFILES_DIR/Brewfile $HOME/Brewfile
 fi
