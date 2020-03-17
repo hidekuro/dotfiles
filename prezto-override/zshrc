@@ -50,7 +50,12 @@ setopt interactive_comments
 setopt auto_pushd
 setopt pushd_ignore_dups
 setopt rm_star_silent
+
+# Fix annoying settings
 setopt no_extended_glob
+setopt clobber
+setopt no_auto_cd
+unalias rm cp mv ln
 
 # Load machine-local zshrc if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
