@@ -3,11 +3,14 @@ cd $(dirname $0)
 DOTFILES_DIR=$(pwd)
 HOME="${ZDOTFILE:-$HOME}"
 
+setopt extended_glob
+setopt clobber
+unalias -a
+
 git submodule update --init --recursive
 
 # install prezto.
 ln -snf $DOTFILES_DIR/prezto $HOME/.zprezto
-setopt extended_glob
 for rcfile in $DOTFILES_DIR/prezto/runcoms/^README.md(.N); do
   ln -snf "$rcfile" "$HOME/.${rcfile:t}"
 done
