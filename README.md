@@ -4,23 +4,14 @@ my dotfiles.
 
 # Getting Started
 
-using `curl`
-
 ```
-curl -sSL https://raw.githubusercontent.com/hidekuro/dotfiles/master/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/hidekuro/dotfiles/master/install.sh | zsh
 ```
 
-or wget
-
-```
-wget -qO - https://raw.githubusercontent.com/hidekuro/dotfiles/master/install.sh | bash
-```
 # Prerequisite
 
-- wget / curl
-- bash / zsh
-- brew (in macOS)
-- sudo
+- curl
+- zsh
 - git
 
 # License
