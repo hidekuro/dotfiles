@@ -55,6 +55,8 @@ setopt rm_star_silent
 setopt no_extended_glob
 setopt clobber
 setopt no_auto_cd
+setopt no_correct
+setopt no_correct_all
 unalias rm cp mv ln
 
 # Load machine-local zshrc if exists.
