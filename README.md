@@ -5,12 +5,12 @@ my dotfiles.
 # Getting Started
 
 ```
-curl -sSL https://raw.githubusercontent.com/hidekuro/dotfiles/master/install.sh | zsh
+git clone https://github.com/hidekuro/dotfiles.git ~/.dotfiles
+zsh ~/.dotfiles/install.sh
 ```
 
 # Prerequisite
 
-- curl
 - zsh
 - git
 
