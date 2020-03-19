@@ -1,7 +1,7 @@
 #!/bin/zsh
 cd $(dirname $0)
 DOTFILES_DIR=$(pwd)
-HOME="${ZDOTFILE:-$HOME}"
+ZDOTFILE="${ZDOTFILE:-$HOME}"
 
 setopt extended_glob
 setopt clobber
@@ -10,19 +10,19 @@ unalias -m '*'
 git submodule update --init --recursive
 
 # install prezto.
-ln -snf $DOTFILES_DIR/prezto $HOME/.zprezto
+ln -snf $DOTFILES_DIR/prezto $ZDOTFILE/.zprezto
 for rcfile in $DOTFILES_DIR/prezto/runcoms/^README.md(.N); do
-  ln -snf "$rcfile" "$HOME/.${rcfile:t}"
+  ln -snf "$rcfile" "$ZDOTFILE/.${rcfile:t}"
 done
 
 # remove or replace some runcoms to get the desired behavior.
-ln -snf $DOTFILES_DIR/prezto-override/zpreztorc $HOME/.zpreztorc
-ln -snf $DOTFILES_DIR/prezto-override/zprofile $HOME/.zprofile
-ln -snf $DOTFILES_DIR/prezto-override/zshenv $HOME/.zshenv
-rm -f $HOME/.zlogout
-rm -f $HOME/.zshrc
-cp -f $DOTFILES_DIR/prezto/runcoms/zshrc $HOME/.zshrc
-cat $DOTFILES_DIR/prezto-override/zshrc >> $HOME/.zshrc
+ln -snf $DOTFILES_DIR/prezto-override/zpreztorc $ZDOTFILE/.zpreztorc
+ln -snf $DOTFILES_DIR/prezto-override/zprofile $ZDOTFILE/.zprofile
+ln -snf $DOTFILES_DIR/prezto-override/zshenv $ZDOTFILE/.zshenv
+rm -f $ZDOTFILE/.zlogout
+rm -f $ZDOTFILE/.zshrc
+cp -f $DOTFILES_DIR/prezto/runcoms/zshrc $ZDOTFILE/.zshrc
+cat $DOTFILES_DIR/prezto-override/zshrc >> $ZDOTFILE/.zshrc
 
 # vim
 mkdir -pv $HOME/.vim/colors
