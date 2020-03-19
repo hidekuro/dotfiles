@@ -31,7 +31,8 @@ ln -snf $DOTFILES_DIR/vimrc $HOME/.vimrc
 
 # git
 cp -f $DOTFILES_DIR/gitconfig $HOME/.gitconfig
-cp -f $DOTFILES_DIR/gitignore_global $HOME/.gitignore_global
+mkdir -p $HOME/.config/git
+cp -f $DOTFILES_DIR/gitignore $HOME/.config/git/ignore
 
 # editorconfig
 ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
