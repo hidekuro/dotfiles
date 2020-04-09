@@ -15,7 +15,7 @@ indent_size = 2
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{py,rb,sh,md,yml,yaml}]
+[*.{rb,sh,md,yml,yaml}]
 indent_size = 2
 
 [{Vagrantfile,Dockerfile,Dockerfile.*}]
