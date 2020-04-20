@@ -1,10 +1,6 @@
 [push]
 	default = simple
 [alias]
-	tree = "log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'"
-	co = checkout
-	cm = commit
-	br = branch
 	st = status
 [color]
 	ui = auto
@@ -14,4 +10,5 @@
 	pager = cat
 [pager]
 	log = less
-
+[log]
+    date = format-local:%F(%a)%T
