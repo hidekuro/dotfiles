@@ -11,4 +11,4 @@
 [pager]
 	log = less
 [log]
-    date = format-local:%F(%a)%T
+    date = format-local:"%F %T"
