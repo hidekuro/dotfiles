@@ -29,8 +29,6 @@ fpath=(
   ${ZDOTDIR:-$HOME}/.zsh/completion(N-/)
   $fpath
 )
-autoload -Uz compinit
-compinit -u
 
 zstyle ':completion:*' ignore-parents parent pwd ..
 zstyle ':completion:*:sudo:*' command-path \
@@ -63,3 +61,6 @@ unalias rm cp mv ln
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
 fi
+
+autoload -Uz compinit
+compinit -u
