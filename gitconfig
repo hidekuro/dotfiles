@@ -12,3 +12,5 @@
 	log = less
 [log]
     date = format-local:"%F %T"
+[pull]
+    rebase = false
