@@ -21,11 +21,14 @@ setopt share_history
 
 # Completion
 setopt auto_menu
+autoload -Uz compinit
+compinit -u
 
 fpath=(
   /usr/local/share/zsh-completions(N-/)
   /usr/local/share/zsh/site-functions(N-/)
   /usr/share/zsh/site-functions(N-/)
+  /usr/share/zsh/vendor-completions(N-/)
   ${ZDOTDIR:-$HOME}/.zsh/completion(N-/)
   $fpath
 )
@@ -61,6 +64,3 @@ unalias rm cp mv ln
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
 fi
-
-autoload -Uz compinit
-compinit -u
