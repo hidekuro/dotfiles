@@ -28,7 +28,6 @@ zstyle ':prezto:*:*' color 'yes'
 # The order matters.
 zstyle ':prezto:load' pmodule \
   'environment' \
-  'completion' \
   'terminal' \
   'editor' \
   'history' \
