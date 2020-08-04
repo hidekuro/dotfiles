@@ -1,7 +1,5 @@
 [push]
 	default = simple
-[alias]
-	st = status
 [color]
 	ui = auto
 [core]
