@@ -1,13 +1,13 @@
 [push]
-	default = simple
+    default = simple
 [color]
-	ui = auto
+    ui = auto
 [core]
-	autocrlf = false
-	safecrlf = true
-	pager = cat
+    autocrlf = false
+    safecrlf = true
+    pager = cat
 [pager]
-	log = less
+    log = less
 [log]
     date = format-local:"%F %T"
 [pull]
