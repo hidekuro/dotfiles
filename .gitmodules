@@ -4,3 +4,6 @@
 [submodule "prezto"]
 	path = prezto
 	url = git@github.com:sorin-ionescu/prezto.git
+[submodule "tmux/theme-iceberg-dark"]
+	path = tmux/theme-iceberg-dark
+	url = git@github.com:gkeep/iceberg-dark.git

@@ -43,4 +43,6 @@ if (type brew > /dev/null 2>&1); then
 fi
 
 # tmux
-ln -snf $DOTFILES_DIR/tmux.conf $HOME/.tmux.conf
+mkdir -p $HOME/.tmux
+ln -snf $DOTFILES_DIR/tmux/tmux.conf $HOME/.tmux.conf
+ln -snf $DOTFILES_DIR/tmux/theme-iceberg-dark $HOME/.tmux/theme-iceberg-dark
