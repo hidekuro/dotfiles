@@ -1,50 +1,48 @@
 #!/bin/zsh
-ZDOTDIR="${ZDOTDIR:-$HOME}"
-cd $ZDOTDIR
-
-DOTFILES_DIR=$(pwd)/.dotfiles
-DOTFILES_DIR_REL=$(realpath --relative-to=$ZDOTDIR $DOTFILES_DIR)
+cd $(dirname $0)
+DOTFILES_DIR=$(pwd)
+ZDOTFILE="${ZDOTFILE:-$HOME}"
 
 setopt extended_glob
 setopt clobber
 unalias -m '*'
 
-git --git-dir=$DOTFILES_DIR/.git submodule update --init --recursive
+git submodule update --init --recursive
 
 # install prezto.
-ln -snfv $DOTFILES_DIR_REL/prezto $ZDOTDIR/.zprezto
-for rcfile in $DOTFILES_DIR_REL/prezto/runcoms/^README.md(.N); do
-  ln -snfv "$rcfile" "$ZDOTDIR/.${rcfile:t}"
+ln -snf $DOTFILES_DIR/prezto $ZDOTFILE/.zprezto
+for rcfile in $DOTFILES_DIR/prezto/runcoms/^README.md(.N); do
+  ln -snf "$rcfile" "$ZDOTFILE/.${rcfile:t}"
 done
 
 # remove or replace some runcoms to get the desired behavior.
-ln -snfv $DOTFILES_DIR_REL/prezto-override/zpreztorc $ZDOTDIR/.zpreztorc
-ln -snfv $DOTFILES_DIR_REL/prezto-override/zprofile $ZDOTDIR/.zprofile
-ln -snfv $DOTFILES_DIR_REL/prezto-override/zshenv $ZDOTDIR/.zshenv
-rm -fv $ZDOTDIR/.zlogout
-rm -fv $ZDOTDIR/.zshrc
-cp -fv $DOTFILES_DIR_REL/prezto/runcoms/zshrc $ZDOTDIR/.zshrc
-cat $DOTFILES_DIR_REL/prezto-override/zshrc >> $ZDOTDIR/.zshrc
+ln -snf $DOTFILES_DIR/prezto-override/zpreztorc $ZDOTFILE/.zpreztorc
+ln -snf $DOTFILES_DIR/prezto-override/zprofile $ZDOTFILE/.zprofile
+ln -snf $DOTFILES_DIR/prezto-override/zshenv $ZDOTFILE/.zshenv
+rm -f $ZDOTFILE/.zlogout
+rm -f $ZDOTFILE/.zshrc
+cp -f $DOTFILES_DIR/prezto/runcoms/zshrc $ZDOTFILE/.zshrc
+cat $DOTFILES_DIR/prezto-override/zshrc >> $ZDOTFILE/.zshrc
 
 # vim
 mkdir -pv $HOME/.vim/colors
-ln -snfv $DOTFILES_DIR_REL/iceberg.vim/colors/iceberg.vim $HOME/.vim/colors/iceberg.vim
-ln -snfv $DOTFILES_DIR_REL/vimrc $HOME/.vimrc
+ln -snf $DOTFILES_DIR/iceberg.vim/colors/iceberg.vim $HOME/.vim/colors/iceberg.vim
+ln -snf $DOTFILES_DIR/vimrc $HOME/.vimrc
 
 # git
-cp -fv $DOTFILES_DIR_REL/gitconfig $HOME/.gitconfig
-mkdir -pv $HOME/.config/git
-cp -fv $DOTFILES_DIR_REL/gitignore $HOME/.config/git/ignore
+cp -f $DOTFILES_DIR/gitconfig $HOME/.gitconfig
+mkdir -p $HOME/.config/git
+cp -f $DOTFILES_DIR/gitignore $HOME/.config/git/ignore
 
 # editorconfig
-ln -snfv $DOTFILES_DIR_REL/editorconfig $HOME/.editorconfig
+ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
 
 # brew
 if (type brew > /dev/null 2>&1); then
-  ln -snfv $DOTFILES_DIR_REL/Brewfile $HOME/Brewfile
+  ln -snf $DOTFILES_DIR/Brewfile $HOME/Brewfile
 fi
 
 # tmux
 mkdir -p $HOME/.tmux
-ln -snfv $DOTFILES_DIR_REL/tmux/tmux.conf $HOME/.tmux.conf
-ln -snfv $DOTFILES_DIR_REL/tmux/theme-iceberg-dark $HOME/.tmux/theme-iceberg-dark
+ln -snf $DOTFILES_DIR/tmux/tmux.conf $HOME/.tmux.conf
+ln -snf $DOTFILES_DIR/tmux/theme-iceberg-dark $HOME/.tmux/theme-iceberg-dark
