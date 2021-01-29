@@ -1,0 +1,14 @@
+# Load original
+source ${ZDOTDIR:-$HOME}/.zprezto/runcoms/zprofile
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  export BROWSER='open'
+fi
+
+export EDITOR='vi'
+export LESS='-g -i -M -R -S -z-4'
+
+# Load machine-local zprofile if exists.
+if [[ -s "${ZDOTDIR:-$HOME}/.zprofile.local" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprofile.local"
+fi

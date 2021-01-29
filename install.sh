@@ -11,18 +11,9 @@ git submodule update --init --recursive
 
 # install prezto.
 ln -snf $DOTFILES_DIR/prezto $ZDOTFILE/.zprezto
-for rcfile in $DOTFILES_DIR/prezto/runcoms/^README.md(.N); do
+for rcfile in $DOTFILES_DIR/prezto-override/runcoms/^README.md(.N); do
   ln -snf "$rcfile" "$ZDOTFILE/.${rcfile:t}"
 done
-
-# remove or replace some runcoms to get the desired behavior.
-ln -snf $DOTFILES_DIR/prezto-override/zpreztorc $ZDOTFILE/.zpreztorc
-ln -snf $DOTFILES_DIR/prezto-override/zprofile $ZDOTFILE/.zprofile
-ln -snf $DOTFILES_DIR/prezto-override/zshenv $ZDOTFILE/.zshenv
-rm -f $ZDOTFILE/.zlogout
-rm -f $ZDOTFILE/.zshrc
-cp -f $DOTFILES_DIR/prezto/runcoms/zshrc $ZDOTFILE/.zshrc
-cat $DOTFILES_DIR/prezto-override/zshrc >> $ZDOTFILE/.zshrc
 
 # vim
 mkdir -pv $HOME/.vim/colors
@@ -30,9 +21,14 @@ ln -snf $DOTFILES_DIR/iceberg.vim/colors/iceberg.vim $HOME/.vim/colors/iceberg.v
 ln -snf $DOTFILES_DIR/vimrc $HOME/.vimrc
 
 # git
+GIT_USER_NAME=$(git config --global user.name)
+GIT_USER_EMAIL=$(git config --global user.email)
 cp -f $DOTFILES_DIR/gitconfig $HOME/.gitconfig
+git config --global user.name "${GIT_USER_NAME}"
+git config --global user.email "${GIT_USER_EMAIL}"
 mkdir -p $HOME/.config/git
-cp -f $DOTFILES_DIR/gitignore $HOME/.config/git/ignore
+ln -snf $DOTFILES_DIR/gitignore $HOME/.config/git/ignore
+unset GIT_USER_NAME GIT_USER_MAIL
 
 # editorconfig
 ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
