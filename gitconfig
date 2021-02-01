@@ -5,6 +5,7 @@
 [core]
     autocrlf = false
     safecrlf = true
+    editor = vi
     pager = cat
 [pager]
     log = less
