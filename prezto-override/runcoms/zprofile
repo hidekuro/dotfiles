@@ -11,12 +11,12 @@ export LESS='-g -i -M -R -S -z-4'
 # https://code.visualstudio.com/docs/remote/containers#_using-ssh-keys
 if [ -z "$SSH_AUTH_SOCK" ]; then
   # Check for a currently running instance of the agent
-  RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
+  RUNNING_AGENT="$(ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]')"
   if [ "$RUNNING_AGENT" = "0" ]; then
     # Launch a new instance of the agent
     ssh-agent -s | sed '/^echo /d' &> $HOME/.ssh/ssh-agent
   fi
-  eval `cat $HOME/.ssh/ssh-agent`
+  eval "$(cat $HOME/.ssh/ssh-agent)"
 fi
 
 ssh-add 2>/dev/null
