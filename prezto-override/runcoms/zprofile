@@ -14,12 +14,12 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
   RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
   if [ "$RUNNING_AGENT" = "0" ]; then
     # Launch a new instance of the agent
-    ssh-agent -s &> $HOME/.ssh/ssh-agent
+    ssh-agent -s | sed '/^echo /d' &> $HOME/.ssh/ssh-agent
   fi
   eval `cat $HOME/.ssh/ssh-agent`
 fi
 
-ssh-add
+ssh-add 2>/dev/null
 
 # Load machine-local zprofile if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprofile.local" ]]; then
