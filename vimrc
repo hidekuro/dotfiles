@@ -4,6 +4,7 @@ set nobackup
 set hidden
 set modelines=0
 set ttyfast
+set mouse-=a
 
 " Edit
 set encoding=utf-8
