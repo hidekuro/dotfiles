@@ -22,7 +22,7 @@ set hlsearch
 
 " Appearance
 set number
-set list
+set nolist
 set tabstop=4
 set scrolloff=5
 set textwidth=0
