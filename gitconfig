@@ -13,3 +13,5 @@
     date = format-local:"%F %T"
 [pull]
     rebase = false
+[init]
+    defaultBranch = main
