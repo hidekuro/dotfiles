@@ -77,6 +77,11 @@ setopt no_auto_cd
 setopt no_correct
 setopt no_correct_all
 
+#
+# Aliases and Functions
+#
+function gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}
+
 # Load machine-local zshrc if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
