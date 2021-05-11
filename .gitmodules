@@ -1,6 +1,6 @@
 [submodule "iceberg.vim"]
 	path = iceberg.vim
-	url = https://github.com/cocopon/iceberg.vim.git
+	url = git@github.com:cocopon/iceberg.vim.git
 [submodule "prezto"]
 	path = prezto
 	url = git@github.com:sorin-ionescu/prezto.git
