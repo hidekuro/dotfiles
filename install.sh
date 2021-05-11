@@ -42,3 +42,6 @@ fi
 mkdir -p $HOME/.tmux
 ln -snf $DOTFILES_DIR/tmux/tmux.conf $HOME/.tmux.conf
 ln -snf $DOTFILES_DIR/tmux/theme-iceberg-dark $HOME/.tmux/theme-iceberg-dark
+
+# direnv
+ln -snf $DOTFILES_DIR/direnvrc $HOME/.direnvrc
