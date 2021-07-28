@@ -35,7 +35,7 @@ ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
 
 # brew
 if (type brew > /dev/null 2>&1); then
-  ln -snf $DOTFILES_DIR/Brewfile $HOME/Brewfile
+  ln -snf $DOTFILES_DIR/Brewfile $HOME/.Brewfile
 fi
 
 # tmux
