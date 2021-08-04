@@ -23,12 +23,18 @@ ln -snf $DOTFILES_DIR/vimrc $HOME/.vimrc
 # git
 GIT_USER_NAME=$(git config --global user.name)
 GIT_USER_EMAIL=$(git config --global user.email)
+GIT_USER_SIGNINGKEY=$(git config --global user.signingKey)
+GIT_COMMIT_GPGSIGN=$(git config --global commit.gpgSign)
+GIT_TAG_GPGSIGN=$(git config --global tag.gpgSign)
 cp -f $DOTFILES_DIR/gitconfig $HOME/.gitconfig
-git config --global user.name "${GIT_USER_NAME}"
-git config --global user.email "${GIT_USER_EMAIL}"
+[ ! -z "$GIT_USER_NAME" ] && git config --global user.name "${GIT_USER_NAME}"
+[ ! -z "$GIT_USER_EMAIL" ] && git config --global user.email "${GIT_USER_EMAIL}"
+[ ! -z "${GIT_USER_SIGNINGKEY}" ] && git config --global user.signingKey "${GIT_USER_SIGNINGKEY}"
+[ ! -z "${GIT_COMMIT_GPGSIGN}" ] && git config --global commit.gpgSign "${GIT_COMMIT_GPGSIGN}"
+[ ! -z "${GIT_TAG_GPGSIGN}" ] && git config --global tag.gpgSign "${GIT_TAG_GPGSIGN}"
 mkdir -p $HOME/.config/git
 ln -snf $DOTFILES_DIR/gitignore $HOME/.config/git/ignore
-unset GIT_USER_NAME GIT_USER_MAIL
+unset GIT_USER_NAME GIT_USER_MAIL GIT_USER_SIGNINGKEY GIT_COMMIT_GPGSIGN
 
 # editorconfig
 ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
