@@ -1,0 +1,11 @@
+name: empty workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: noop
+        run: echo "noop"
