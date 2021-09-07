@@ -41,7 +41,11 @@ ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
 
 # brew
 if (type brew > /dev/null 2>&1); then
-  ln -snf $DOTFILES_DIR/Brewfile $HOME/.Brewfile
+  if [[ "$OS_TYPE" == "darwin*" ]]; then
+    ln -snf $DOTFILES_DIR/Brewfile $HOME/.Brewfile
+  elif [[ ! -z "$WSL_DISTRO_NAME" ]]; then
+    ln -snf $DOTFILES_DIR/Brewfile-wsl2 $HOME/.Brewfile
+  fi
 fi
 
 # tmux
