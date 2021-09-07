@@ -1,14 +1,8 @@
 # Ignore global rcfiles.
 setopt no_global_rcs
 
-# Homebrew prefix
-export BREW_PREFIX=$(brew --prefix)
-
 # Disable pager for AWS CLI v2
 export AWS_PAGER=""
-
-# lesspipe
-export LESSOPEN="|${BREW_PREFIX}/bin/lesspipe.sh %s" LESS_ADVANCED_PREPROCESSOR=1
 
 # Load machine-local zshenv if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zshenv.local" ]]; then
