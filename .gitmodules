@@ -1,9 +1,12 @@
 [submodule "iceberg.vim"]
 	path = iceberg.vim
 	url = git@github.com:cocopon/iceberg.vim.git
+	branch = master
 [submodule "prezto"]
 	path = prezto
 	url = git@github.com:sorin-ionescu/prezto.git
+	branch = master
 [submodule "tmux/theme-iceberg-dark"]
 	path = tmux/theme-iceberg-dark
 	url = git@github.com:gkeep/iceberg-dark.git
+	branch = master
