@@ -62,6 +62,7 @@ brew "openssh"
 brew "p7zip"
 brew "php-cs-fixer"
 brew "php@7.4", link: true
+brew "pre-commit"
 brew "pwgen"
 brew "python-yq"
 brew "rsync"
