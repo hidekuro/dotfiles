@@ -39,8 +39,6 @@ setopt share_history
 
 # Completion
 setopt auto_menu
-autoload -Uz compinit
-compinit -u
 
 fpath=(
   /usr/local/share/zsh-completions(N-/)
@@ -50,6 +48,13 @@ fpath=(
   ${ZDOTDIR:-$HOME}/.zsh/completion(N-/)
   $fpath
 )
+
+if ( type brew &>/dev/null ) then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
+autoload -Uz compinit
+compinit -u
 
 zstyle ':completion:*' ignore-parents parent pwd ..
 zstyle ':completion:*:sudo:*' command-path \
