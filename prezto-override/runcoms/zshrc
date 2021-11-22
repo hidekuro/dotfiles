@@ -37,6 +37,27 @@ setopt hist_reduce_blanks
 setopt hist_no_store
 setopt share_history
 
+# PATH
+path=(
+    $HOME/.local/bin(N-/)
+    $HOME/bin(N-/)
+    $path
+)
+
+# Homebrew
+path=(
+    /home/linuxbrew/.linuxbrew/bin(N-/)
+    $HOME/.linuxbrew/bin(N-/)
+    $path
+)
+
+if type brew &>/dev/null
+then
+  eval $(brew shellenv)
+  export BREW_PREFIX="$(brew --prefix)"
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 # Completion
 setopt auto_menu
 
