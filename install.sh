@@ -32,7 +32,6 @@ cp -f $DOTFILES_DIR/gitconfig $HOME/.gitconfig
 [ ! -z "${GIT_USER_SIGNINGKEY}" ] && git config --global user.signingKey "${GIT_USER_SIGNINGKEY}"
 [ ! -z "${GIT_COMMIT_GPGSIGN}" ] && git config --global commit.gpgSign "${GIT_COMMIT_GPGSIGN}"
 [ ! -z "${GIT_TAG_GPGSIGN}" ] && git config --global tag.gpgSign "${GIT_TAG_GPGSIGN}"
-[ -e $HOME/.gitconfig.local ] && cat $HOME/.gitconfig.local >> $HOME/.gitconfig
 mkdir -p $HOME/.config/git
 ln -snf $DOTFILES_DIR/gitignore $HOME/.config/git/ignore
 unset GIT_USER_NAME GIT_USER_MAIL GIT_USER_SIGNINGKEY GIT_COMMIT_GPGSIGN
