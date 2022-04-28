@@ -103,6 +103,10 @@ setopt no_auto_cd
 setopt no_correct
 setopt no_correct_all
 
+# Key bindings
+bindkey '^S' history-incremental-search-forward
+bindkey '^R' history-incremental-search-backward
+
 #
 # Aliases and Functions
 #
