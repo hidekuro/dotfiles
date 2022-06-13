@@ -1,7 +1,5 @@
 tap "argoproj/tap"
 tap "aws/tap"
-tap "beeftornado/rmtree"
-tap "homebrew/brewdler"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-drivers"
