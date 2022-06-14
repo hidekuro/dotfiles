@@ -33,8 +33,6 @@ set laststatus=2
 set showcmd
 set showmode
 set notitle
-set background=dark
 syntax enable
-colorscheme iceberg
 highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 match ZenkakuSpace /　/
