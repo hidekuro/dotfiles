@@ -1,9 +1,6 @@
 # Ignore global rcfiles.
 setopt no_global_rcs
 
-# Disable pager for AWS CLI v2
-export AWS_PAGER=""
-
 # Load machine-local zshenv if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zshenv.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshenv.local"
