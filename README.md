@@ -10,8 +10,8 @@ my dotfiles.
 ## Getting Started
 
 ```zsh
-git clone https://github.com/hidekuro/dotfiles.git ~/.dotfiles
-zsh ~/.dotfiles/install.sh
+git clone https://github.com/hidekuro/dotfiles.git ~/dotfiles
+zsh ~/dotfiles/install.sh
 ```
 
 ## License
