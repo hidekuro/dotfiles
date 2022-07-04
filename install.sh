@@ -17,7 +17,6 @@ done
 
 # vim
 mkdir -pv $HOME/.vim/colors
-ln -snf $DOTFILES_DIR/iceberg.vim/colors/iceberg.vim $HOME/.vim/colors/iceberg.vim
 ln -snf $DOTFILES_DIR/vimrc $HOME/.vimrc
 
 # git
