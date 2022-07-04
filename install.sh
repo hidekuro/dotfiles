@@ -13,7 +13,7 @@ ln -snf "${DOTFILES_DIR}/bash_aliases" "${HOME}/.bash_aliases"
 
 # prezto
 if (type zsh >/dev/null); then
-  zsh ./install-prezto.sh
+  zsh _prezto.sh
 fi
 
 # vim

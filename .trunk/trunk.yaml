@@ -12,4 +12,4 @@ lint:
         - "shellcheck"
         - "shfmt"
       paths:
-        - install-prezto.sh
+        - _*.sh
