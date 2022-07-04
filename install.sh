@@ -1,19 +1,20 @@
-#!/bin/zsh
-cd $(dirname $0)
+#!/bin/bash
+set -e
+cd "$(dirname "$0")"
 DOTFILES_DIR=$(pwd)
-ZDOTFILE="${ZDOTFILE:-$HOME}"
 
-setopt extended_glob
-setopt clobber
-unalias -m '*'
+if ! (type git >/dev/null); then
+  echo "git is required." >&2
+  exit 1
+fi
 
-git submodule update --init --recursive
+# bash
+ln -snf "${DOTFILES_DIR}/bash_aliases" "${HOME}/.bash_aliases"
 
-# install prezto.
-ln -snf $DOTFILES_DIR/prezto $ZDOTFILE/.zprezto
-for rcfile in $DOTFILES_DIR/prezto-override/runcoms/^README.md(.N); do
-  ln -snf "$rcfile" "$ZDOTFILE/.${rcfile:t}"
-done
+# prezto
+if (type zsh >/dev/null); then
+  zsh ./install-prezto.sh
+fi
 
 # vim
 mkdir -pv $HOME/.vim/colors

@@ -4,14 +4,13 @@ my dotfiles.
 
 ## Prerequisite
 
-- zsh
 - git
 
 ## Getting Started
 
-```zsh
+```bash
 git clone https://github.com/hidekuro/dotfiles.git ~/dotfiles
-zsh ~/dotfiles/install.sh
+bash ~/dotfiles/install.sh
 ```
 
 ## License
