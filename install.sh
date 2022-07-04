@@ -8,7 +8,9 @@ if ! (type git >/dev/null 2>&1); then
 fi
 
 # bash
-ln -snf "${DOTFILES_DIR}/bash_aliases" "${HOME}/.bash_aliases"
+ln -snf "${DOTFILES_DIR}/bash/bash_profile" "${HOME}/.bash_profile"
+ln -snf "${DOTFILES_DIR}/bash/bashrc" "${HOME}/.bashrc"
+ln -snf "${DOTFILES_DIR}/bash/bash_aliases" "${HOME}/.bash_aliases"
 
 # prezto
 if (type zsh >/dev/null 2>&1); then
