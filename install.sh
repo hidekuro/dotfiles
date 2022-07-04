@@ -40,12 +40,15 @@ unset GIT_USER_NAME GIT_USER_MAIL GIT_USER_SIGNINGKEY GIT_COMMIT_GPGSIGN
 ln -snf $DOTFILES_DIR/editorconfig $HOME/.editorconfig
 
 # brew
-if (type brew > /dev/null 2>&1); then
-  if [[ "$OS_TYPE" == "darwin*" ]]; then
-    ln -snf $DOTFILES_DIR/Brewfile $HOME/.Brewfile
-  elif [[ ! -z "$WSL_DISTRO_NAME" ]]; then
-    ln -snf $DOTFILES_DIR/Brewfile-wsl2 $HOME/.Brewfile
-  fi
+if (type brew >/dev/null); then
+  case "${OSTYPE}" in
+  darwin*)
+    ln -snf "${DOTFILES_DIR}/Brewfile-macos" "${HOME}/.Brewfile"
+    ;;
+  *)
+    ln -snf "${DOTFILES_DIR}/Brewfile-linux" "${HOME}/.Brewfile"
+    ;;
+  esac
 fi
 
 # tmux
