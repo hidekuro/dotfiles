@@ -3,7 +3,7 @@ set -e
 cd "$(dirname "$0")"
 DOTFILES_DIR=$(pwd)
 
-if ! (type git >/dev/null); then
+if ! (type git >/dev/null 2>&1); then
   echo "git is required." >&2
   exit 1
 fi
@@ -12,7 +12,7 @@ fi
 ln -snf "${DOTFILES_DIR}/bash_aliases" "${HOME}/.bash_aliases"
 
 # prezto
-if (type zsh >/dev/null); then
+if (type zsh >/dev/null 2>&1); then
   zsh _prezto.sh
 fi
 
@@ -40,7 +40,7 @@ unset GIT_USER_NAME GIT_USER_MAIL GIT_USER_SIGNINGKEY GIT_COMMIT_GPGSIGN
 ln -snf "${DOTFILES_DIR}/editorconfig" "${HOME}/.editorconfig"
 
 # brew
-if (type brew >/dev/null); then
+if (type brew >/dev/null 2>&1); then
   case "${OSTYPE}" in
   darwin*)
     ln -snf "${DOTFILES_DIR}/Brewfile-macos" "${HOME}/.Brewfile"
