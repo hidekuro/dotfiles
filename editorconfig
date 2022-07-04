@@ -1,25 +1,20 @@
 root = true
 
 [*]
-indent_size = 4
+indent_size = 2
 indent_style = space
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
-tab_width = 4
-
-[*rc]
-indent_size = 2
+tab_width = 2
 
 [*.md]
+indent_size = 4
 trim_trailing_whitespace = false
 
-[*.{rb,sh,md,yml,yaml}]
-indent_size = 2
-
-[{Vagrantfile,Dockerfile,Dockerfile.*}]
-indent_size = 2
+[*.{py}]
+indent_size = 4
 
 [{Makefile,*.mk}]
 indent_style = tab
