@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
 DOTFILES_DIR=$(pwd)
 
 if ! (type git >/dev/null 2>&1); then
