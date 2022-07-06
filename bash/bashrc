@@ -1,3 +1,8 @@
+# include default .bashrc if exists
+if [ -f /etc/skel/.bashrc ]; then
+  . /etc/skel/.bashrc
+fi
+
 # include .bash_aliases if it exists
 if [ -f ~/.bash_aliases ]; then
   . ~/.bash_aliases
