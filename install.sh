@@ -33,6 +33,7 @@ cp -f "${DOTFILES_DIR}/gitconfig" "${HOME}/.gitconfig"
 [[ -n ${GIT_USER_SIGNINGKEY} ]] && git config --global user.signingKey "${GIT_USER_SIGNINGKEY}"
 [[ -n ${GIT_COMMIT_GPGSIGN} ]] && git config --global commit.gpgSign "${GIT_COMMIT_GPGSIGN}"
 [[ -n ${GIT_TAG_GPGSIGN} ]] && git config --global tag.gpgSign "${GIT_TAG_GPGSIGN}"
+git config --global include.path "${HOME}/.gitconfig.local"
 mkdir -p "${HOME}/.config/git"
 ln -snf "${DOTFILES_DIR}/gitignore" "${HOME}/.config/git/ignore"
 unset GIT_USER_NAME GIT_USER_MAIL GIT_USER_SIGNINGKEY GIT_COMMIT_GPGSIGN
