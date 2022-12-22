@@ -1,2 +1,2 @@
-source_up
+source_up_if_exists
 dotenv_if_exists
