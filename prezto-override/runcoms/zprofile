@@ -1,5 +1,5 @@
 # Load original
-source ${ZDOTDIR:-$HOME}/.zprezto/runcoms/zprofile
+source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zprofile"
 
 if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'

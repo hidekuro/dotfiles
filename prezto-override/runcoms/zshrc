@@ -1,5 +1,5 @@
 # Load original
-source ${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc
+source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc"
 
 # Colors
 autoload -Uz colors
