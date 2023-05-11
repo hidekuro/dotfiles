@@ -45,17 +45,12 @@ path=(
 )
 
 # Homebrew
-path=(
-    /home/linuxbrew/.linuxbrew/bin(N-/)
-    $HOME/.linuxbrew/bin(N-/)
-    $path
-)
-
-if type brew &>/dev/null
-then
-  eval $(brew shellenv)
-  export BREW_PREFIX="$(brew --prefix)"
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+if ( type brew &>/dev/null ); then
+  eval "$(brew shellenv)"
+  fpath=(
+    $HOMEBREW_PREFIX/share/zsh/site-functions(N-/)
+    $fpath
+  )
 fi
 
 # Completion
@@ -69,10 +64,6 @@ fpath=(
   ${ZDOTDIR:-$HOME}/.zsh/completion(N-/)
   $fpath
 )
-
-if ( type brew &>/dev/null ) then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-fi
 
 autoload -Uz compinit
 compinit -u
