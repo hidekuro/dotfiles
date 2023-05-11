@@ -19,13 +19,13 @@ case $OSTYPE in
     ;;
 esac
 
-export LSCOLORS=gxfxcxdxbxegedabagacag
+export LSCOLORS='gxfxcxdxbxegedabagacag'
 export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
 
 # History
-export HISTCONTROL=ignoreboth
-HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
+export HISTCONTROL="ignoreboth"
+HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
 HISTSIZE=500000
 SAVEHIST=500000
 setopt hist_ignore_dups
