@@ -1,24 +1,6 @@
 # Load original
 source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc"
 
-# Colors
-autoload -Uz colors
-colors
-
-case $OSTYPE in
-  darwin*)
-    export CLICOLOR=1
-    if (type gls >/dev/null 2>&1); then
-      alias ls="${aliases[ls]:-ls} -F --color=auto --time-style=long-iso"
-    else
-      alias ls="${aliases[ls]:-ls} -G -F -T"
-    fi
-    ;;
-  linux*|msys*)
-    alias ls="${aliases[ls]:-ls} -F --color=auto --time-style=long-iso"
-    ;;
-esac
-
 export LSCOLORS='gxfxcxdxbxegedabagacag'
 export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
@@ -77,6 +59,24 @@ zstyle ':completion:*:sudo:*' command-path \
   /sbin \
   /bin \
   /usr/X11R6/bin
+
+# Colors
+autoload -Uz colors
+colors
+
+case $OSTYPE in
+  darwin*)
+    export CLICOLOR=1
+    if (type gls >/dev/null 2>&1); then
+      alias ls="${aliases[ls]:-ls} -F --color=auto --time-style=long-iso"
+    else
+      alias ls="${aliases[ls]:-ls} -G -F -T"
+    fi
+    ;;
+  linux*|msys*)
+    alias ls="${aliases[ls]:-ls} -F --color=auto --time-style=long-iso"
+    ;;
+esac
 
 # Misc options
 setopt print_eight_bit
