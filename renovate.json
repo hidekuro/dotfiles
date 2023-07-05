@@ -1,8 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "timezone": "Asia/Tokyo",
   "extends": [
     "config:base"
   ],
+  "ignorePresets": [
+    ":prHourlyLimit2"
+  ],
+  "automerge": true,
+  "branchConcurrentLimit": 0,
   "git-submodules": {
     "enabled": true
   }
