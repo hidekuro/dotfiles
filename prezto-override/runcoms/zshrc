@@ -21,9 +21,9 @@ setopt share_history
 
 # PATH
 path=(
-    $HOME/.local/bin(N-/)
-    $HOME/bin(N-/)
-    $path
+  $HOME/.local/bin(N-/)
+  $HOME/bin(N-/)
+  $path
 )
 
 # Homebrew
