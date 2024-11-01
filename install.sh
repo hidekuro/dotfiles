@@ -45,10 +45,10 @@ ln -snf "${DOTFILES_DIR}/editorconfig" "${HOME}/.editorconfig"
 if (type brew >/dev/null 2>&1); then
   case "${OSTYPE}" in
   darwin*)
-    ln -snf "${DOTFILES_DIR}/Brewfile-macos" "${HOME}/Brewfile"
+    ln -snf "${DOTFILES_DIR}/Brewfile-macos" "${HOME}/.Brewfile"
     ;;
   *)
-    ln -snf "${DOTFILES_DIR}/Brewfile-linux" "${HOME}/Brewfile"
+    ln -snf "${DOTFILES_DIR}/Brewfile-linux" "${HOME}/.Brewfile"
     ;;
   esac
 fi
