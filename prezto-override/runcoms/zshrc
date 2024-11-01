@@ -23,6 +23,9 @@ setopt share_history
 path=(
   $HOME/.local/bin(N-/)
   $HOME/bin(N-/)
+  $HOMEBREW_PREFIX/opt/gnu-getopt/bin(N-/)
+  $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin(N-/)
+  $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin(N-/)
   $path
 )
 
