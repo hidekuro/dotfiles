@@ -38,6 +38,14 @@ if ( type brew &>/dev/null ); then
   )
 fi
 
+# asdf-vm
+if ( type asdf &>/dev/null ); then
+  fpath=(
+    ${ASDF_DATA_DIR:-$HOME/.asdf}/completions
+    $fpath
+  )
+fi
+
 # Completion
 setopt auto_menu
 
