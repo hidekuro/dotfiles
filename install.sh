@@ -59,3 +59,10 @@ ln -snf "${DOTFILES_DIR}/tmux/tmux.conf" "${HOME}/.tmux.conf"
 
 # direnv
 ln -snf "${DOTFILES_DIR}/direnvrc" "${HOME}/.direnvrc"
+
+# Create local config files from templates if they don't exist
+for tpl in $(find "${DOTFILES_DIR}/local-templates" -type f); do
+  filename=$(basename "$tpl")
+  # Use -n to prevent overwriting existing files
+  cp -n "$tpl" "${HOME}/.${filename}"
+done
