@@ -1,9 +1,6 @@
 {
   "recommendations": [
     "editorconfig.editorconfig",
-    "trunk.io",
-    "foxundermoon.shell-format",
-    "DavidAnson.vscode-markdownlint",
-    "bierner.github-markdown-preview",
+    "foxundermoon.shell-format"
   ]
 }
