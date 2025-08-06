@@ -1,0 +1,9 @@
+# ~/.zshrc.local
+#
+# This file is loaded by interactive shells before compinit.
+# Use it for basic shell settings like aliases and environment variables
+# that don't depend on completion.
+#
+# Example:
+# export EDITOR="vim"
+# alias ls="ls -A -F --color=auto"

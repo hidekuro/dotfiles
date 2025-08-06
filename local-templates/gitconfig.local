@@ -1,0 +1,15 @@
+# ~/.gitconfig.local
+#
+# This file is included by the main .gitconfig.
+# Use it for machine-specific Git settings.
+# The settings below are examples. Uncomment and edit them as needed.
+
+# --- Credential Helper ---
+# The path to credential helpers can vary depending on the OS or installation method (e.g., Homebrew).
+# [credential "https://github.com"]
+# 	helper = !/path/to/gh auth git-credential
+
+# --- GPG/SSH Signing Program ---
+# The path to a signing program like 1Password's is often machine-specific.
+# [gpg "ssh"]
+# 	program = /path/to/op-ssh-sign

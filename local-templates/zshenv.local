@@ -1,0 +1,7 @@
+# ~/.zshenv.local
+#
+# This file is loaded by all shells (login, interactive, and non-interactive).
+# Use it for environment variables that should be available everywhere.
+#
+# Example:
+# export MY_SECRET_API_KEY="value"

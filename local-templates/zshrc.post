@@ -1,0 +1,8 @@
+# ~/.zshrc.post
+#
+# This file is loaded by interactive shells after compinit.
+# Use it for tool initializations that require `eval` or `source`,
+# especially those that set up shell completion.
+#
+# Example:
+# eval "$(gh completion -s zsh)"

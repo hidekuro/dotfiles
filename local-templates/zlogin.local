@@ -1,0 +1,7 @@
+# ~/.zlogin.local
+#
+# This file is loaded by login shells after .zshrc.
+# Use it for commands that should be executed at the end of the login process.
+#
+# Example:
+# neofetch

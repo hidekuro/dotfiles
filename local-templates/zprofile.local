@@ -1,0 +1,7 @@
+# ~/.zprofile.local
+#
+# This file is loaded by login shells before .zshrc.
+# Use it for commands that should be executed only at login.
+#
+# Example:
+# ssh-add -K ~/.ssh/id_rsa
