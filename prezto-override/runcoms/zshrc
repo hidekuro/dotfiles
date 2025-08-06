@@ -41,7 +41,7 @@ fi
 # asdf-vm
 if ( type asdf &>/dev/null ); then
   fpath=(
-    ${ASDF_DATA_DIR:-$HOME/.asdf}/completions
+    ${ASDF_DATA_DIR:-$HOME/.asdf}/completions(N-/)
     $fpath
   )
 fi
