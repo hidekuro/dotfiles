@@ -41,7 +41,7 @@ fi
 # asdf-vm
 if ( type asdf &>/dev/null ); then
   fpath=(
-    ${ASDF_DATA_DIR:-$HOME/.asdf}/completions
+    ${ASDF_DATA_DIR:-$HOME/.asdf}/completions(N-/)
     $fpath
   )
 fi
@@ -57,9 +57,6 @@ fpath=(
   ${ZDOTDIR:-$HOME}/.zsh/completion(N-/)
   $fpath
 )
-
-autoload -Uz compinit
-compinit -u
 
 zstyle ':completion:*' ignore-parents parent pwd ..
 zstyle ':completion:*:sudo:*' command-path \
@@ -116,7 +113,27 @@ function gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}
 alias awsec2ls="aws ec2 describe-instances --filter \"Name=instance-state-name,Values=running\" --query 'Reservations[].Instances[].{Name: (Tags[?Key==\`Name\`].Value|[0]), InstanceId: InstanceId}'"
 alias gpf='git push --force-if-includes'
 
-# Load machine-local zshrc if exists.
+# Load local path settings
+if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.path" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.path"
+fi
+
+# Load local environment variables and aliases
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
+fi
+
+# Initialize completion system if cache is not available or outdated
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.m+1) ]]; then
+  # Regenerate .zcompdump if it's more than a day old.
+  compinit
+else
+  # Otherwise, initialize with the cache for faster startup.
+  compinit -C
+fi
+
+# Load local settings that should be run after compinit (tool initializations)
+if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.post" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.post"
 fi

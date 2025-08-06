@@ -2,6 +2,9 @@
 # Sets Prezto options.
 #
 
+# Tell the completion module to not run compinit
+zstyle ':prezto:module:completion' init 'no'
+
 #
 # General
 #
@@ -34,6 +37,7 @@ zstyle ':prezto:load' pmodule \
   'directory' \
   'spectrum' \
   'utility' \
+  'completion' \
   'prompt' \
   'git' \
   'docker'
