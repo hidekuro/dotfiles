@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "**/prezto-override/runcoms/z*": "shellscript",
+    "**/local-templates/z*": "shellscript",
+    "**/local-templates/gitconfig.local": "properties"
+  }
+}
