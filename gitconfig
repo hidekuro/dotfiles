@@ -8,8 +8,6 @@
     safecrlf = true
     editor = vi
     pager = cat
-[pager]
-    log = less
 [log]
     date = format-local:"%F %T"
 [pull]
