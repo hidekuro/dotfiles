@@ -54,7 +54,7 @@ fpath=(
   /usr/local/share/zsh/site-functions(N-/)
   /usr/share/zsh/site-functions(N-/)
   /usr/share/zsh/vendor-completions(N-/)
-  ${ZDOTDIR:-$HOME}/.zsh/completion(N-/)
+  ${ZDOTDIR:-$HOME}/.zsh/completions(N-/)
   $fpath
 )
 
