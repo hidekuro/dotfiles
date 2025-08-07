@@ -125,7 +125,10 @@ fi
 
 # Initialize completion system if cache is not available or outdated
 autoload -Uz compinit
-if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.m+1) ]]; then
+
+local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
+
+if [[ ! -f "$zcd_file" || -n "$zcd_file"(#qN.m+1) ]]; then
   # Regenerate .zcompdump if it's more than a day old.
   compinit
 else
