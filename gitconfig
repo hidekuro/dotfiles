@@ -7,7 +7,7 @@
     autocrlf = false
     safecrlf = true
     editor = vi
-    pager = cat
+    pager = less
 [log]
     date = format-local:"%F %T"
 [pull]
