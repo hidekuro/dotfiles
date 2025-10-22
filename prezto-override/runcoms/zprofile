@@ -32,6 +32,17 @@ fi
 ssh-add 2>/dev/null
 
 # ========================================
+# Tmux Auto-start
+# ========================================
+
+# Auto start tmux session on login (both local and remote)
+if [[ -z "$TMUX" ]] && { [[ -n "$SSH_TTY" ]] || [[ -z "$SSH_TTY" && -t 0 ]] }; then
+  if command -v tmux &>/dev/null; then
+    exec tmux new-session -A -s default
+  fi
+fi
+
+# ========================================
 # Load Local Configuration
 # ========================================
 

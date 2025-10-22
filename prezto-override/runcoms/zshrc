@@ -1,37 +1,10 @@
 #!/bin/zsh
 # ========================================
-# Antidote Plugin Manager Setup
+# Colors (set early for other modules)
 # ========================================
 
-# Install Antidote if not present
-ANTIDOTE_HOME="${ZDOTDIR:-$HOME}/.antidote"
-if [[ ! -d "$ANTIDOTE_HOME" ]]; then
-  echo "Installing Antidote..."
-  git clone --depth=1 https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
-fi
-
-# Source Antidote
-source "$ANTIDOTE_HOME/antidote.zsh"
-
-# Load plugins from static file (faster startup)
-ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
-ANTIDOTE_PLUGIN_LIST="${ZDOTDIR:-$HOME}/.dotfiles/zsh/zsh_plugins.txt"
-
-# Generate static plugin file if needed
-if [[ ! -f "$ANTIDOTE_PLUGINS" || "$ANTIDOTE_PLUGIN_LIST" -nt "$ANTIDOTE_PLUGINS" ]]; then
-  antidote bundle <"$ANTIDOTE_PLUGIN_LIST" >|"$ANTIDOTE_PLUGINS"
-fi
-
-source "$ANTIDOTE_PLUGINS"
-
-# ========================================
-# Zsh Core Settings
-# ========================================
-
-# Colors
 export LSCOLORS='gxfxcxdxbxegedabagacag'
 export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
-zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
 
 autoload -Uz colors
 colors
@@ -107,7 +80,7 @@ if ( type asdf &>/dev/null ); then
 fi
 
 # ========================================
-# Completion System
+# Completion System Setup (BEFORE plugins)
 # ========================================
 
 setopt auto_menu
@@ -122,6 +95,7 @@ fpath=(
 )
 
 zstyle ':completion:*' ignore-parents parent pwd ..
+zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
 zstyle ':completion:*:sudo:*' command-path \
   /usr/local/sbin \
   /usr/local/bin \
@@ -131,7 +105,7 @@ zstyle ':completion:*:sudo:*' command-path \
   /bin \
   /usr/X11R6/bin
 
-# Initialize completion system
+# Initialize completion system BEFORE loading plugins
 autoload -Uz compinit
 
 local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
@@ -143,6 +117,31 @@ else
   # Otherwise, initialize with the cache for faster startup.
   compinit -C
 fi
+
+# ========================================
+# Antidote Plugin Manager Setup
+# ========================================
+
+# Install Antidote if not present
+ANTIDOTE_HOME="${ZDOTDIR:-$HOME}/.antidote"
+if [[ ! -d "$ANTIDOTE_HOME" ]]; then
+  echo "Installing Antidote..."
+  git clone --depth=1 https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
+fi
+
+# Source Antidote
+source "$ANTIDOTE_HOME/antidote.zsh"
+
+# Load plugins from static file (faster startup)
+ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
+ANTIDOTE_PLUGIN_LIST="${ZDOTDIR:-$HOME}/.dotfiles/zsh/zsh_plugins.txt"
+
+# Generate static plugin file if needed
+if [[ ! -f "$ANTIDOTE_PLUGINS" || "$ANTIDOTE_PLUGIN_LIST" -nt "$ANTIDOTE_PLUGINS" ]]; then
+  antidote bundle <"$ANTIDOTE_PLUGIN_LIST" >|"$ANTIDOTE_PLUGINS"
+fi
+
+source "$ANTIDOTE_PLUGINS"
 
 # ========================================
 # Plugin-Specific Configuration
@@ -197,23 +196,14 @@ setopt no_correct_all
 # ========================================
 
 # Auto set terminal title (matches Prezto terminal module behavior)
-chpwd() {
-  print -Pn "\e]2;%n@%m: %~\a"  # Window title
-  print -Pn "\e]1;%m: %~\a"     # Tab title
-}
-
-# Set title on initial load
-chpwd
-
-# ========================================
-# Tmux Auto-start
-# ========================================
-
-# Auto start tmux session (matches Prezto tmux module behavior)
-if [[ -z "$TMUX" ]] && { [[ -n "$SSH_TTY" ]] || [[ -z "$SSH_TTY" && -t 0 ]] }; then
-  if command -v tmux &>/dev/null; then
-    tmux attach-session -t default || tmux new-session -s default
-  fi
+# Note: Pure prompt handles terminal title, so we only set this if Pure is not loaded
+if ! typeset -f prompt_pure_precmd &>/dev/null; then
+  chpwd() {
+    print -Pn "\e]2;%n@%m: %~\a"  # Window title
+    print -Pn "\e]1;%m: %~\a"     # Tab title
+  }
+  # Set title on initial load
+  chpwd
 fi
 
 # ========================================
