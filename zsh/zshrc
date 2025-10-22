@@ -53,17 +53,9 @@ bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
 # ========================================
-# Homebrew Integration (early initialization)
-# ========================================
-
-# Initialize Homebrew first to set HOMEBREW_PREFIX and PATH
-if ( type brew &>/dev/null ); then
-  eval "$(brew shellenv)"
-fi
-
-# ========================================
 # PATH Configuration
 # ========================================
+# Note: Homebrew is initialized in ~/.zshenv for early availability
 
 path=(
   $HOME/.local/bin(N-/)

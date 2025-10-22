@@ -6,6 +6,17 @@ fi
 # Ignore global rcfiles.
 setopt no_global_rcs
 
+# ========================================
+# Homebrew Integration
+# ========================================
+# Initialize Homebrew early to make it available for all shell sessions
+# This follows Homebrew's official recommendation for zsh
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 # Load machine-local zshenv if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zshenv.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshenv.local"
