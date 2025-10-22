@@ -20,7 +20,7 @@ zsh-users/zsh-completions
 zsh-users/zsh-syntax-highlighting
 
 # Command suggestions from history
-zsh-users/zsh-autosuggestions
+# zsh-users/zsh-autosuggestions
 
 # History substring search (arrow keys)
 zsh-users/zsh-history-substring-search
