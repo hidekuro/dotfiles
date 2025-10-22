@@ -4,15 +4,12 @@
 # Claude
 **/.claude/settings.local.json
 
-# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,windows,direnv,dotenv
-# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,windows,direnv,dotenv
+# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,direnv,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,direnv,windows
 
 ### direnv ###
 .direnv
 .envrc
-
-### dotenv ###
-.env
 
 ### Linux ###
 *~
@@ -58,6 +55,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### macOS Patch ###
+# iCloud generated files
+*.icloud
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
@@ -84,4 +85,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,direnv,dotenv
+# End of https://www.toptal.com/developers/gitignore/api/linux,macos,direnv,windows
