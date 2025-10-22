@@ -174,9 +174,6 @@ source "$ANTIDOTE_PLUGINS"
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
 
-# Git log custom format (matches Prezto config)
-alias gl="git log --graph --pretty=format:'%C(green)%h%C(reset) %cd %C(blue)%cn%C(reset) %s%C(red)%d%C(reset)%n' --date=short"
-
 # ========================================
 # Platform-Specific Settings
 # ========================================
