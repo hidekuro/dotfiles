@@ -1,0 +1,26 @@
+# Antidote Plugin List
+# This file defines the zsh plugins to be loaded by Antidote
+
+# Prompt (Pure theme - same as Prezto)
+sindresorhus/pure
+
+# Git utilities (Oh My Zsh plugin)
+ohmyzsh/ohmyzsh path:plugins/git
+
+# Docker completion and utilities
+ohmyzsh/ohmyzsh path:plugins/docker
+
+# SSH Agent management
+ohmyzsh/ohmyzsh path:plugins/ssh-agent
+
+# Additional completions
+zsh-users/zsh-completions
+
+# Syntax highlighting (must be loaded near the end)
+zsh-users/zsh-syntax-highlighting
+
+# Command suggestions from history
+zsh-users/zsh-autosuggestions
+
+# History substring search (arrow keys)
+zsh-users/zsh-history-substring-search

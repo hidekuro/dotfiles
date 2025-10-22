@@ -1,5 +1,7 @@
-# Load original
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zprofile"
+#!/bin/zsh
+# ========================================
+# Environment Variables
+# ========================================
 
 if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
@@ -9,6 +11,13 @@ export EDITOR='vi'
 export VISUAL='vi'
 export LESS='-g -i -M -R -S -z-4'
 
+# ========================================
+# SSH Agent Setup
+# ========================================
+# Note: The Oh My Zsh ssh-agent plugin will handle most of the ssh-agent
+# management. This section is kept for compatibility with environments
+# where the plugin might not be loaded yet (e.g., VSCode Remote Containers)
+
 # https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_using-ssh-keys
 if [ -z "$SSH_AUTH_SOCK" ]; then
   # Check for a currently running instance of the agent
@@ -17,10 +26,14 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
     # Launch a new instance of the agent
     ssh-agent -s | sed '/^echo /d' &> $HOME/.ssh/ssh-agent
   fi
-  eval "$(cat $HOME/.ssh/ssh-agent)"
+  eval "$(cat $HOME/.ssh/ssh-agent)" 2>/dev/null
 fi
 
 ssh-add 2>/dev/null
+
+# ========================================
+# Load Local Configuration
+# ========================================
 
 # Load machine-local zprofile if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprofile.local" ]]; then

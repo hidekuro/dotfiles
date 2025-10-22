@@ -1,15 +1,51 @@
-# Load original
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zshrc"
+#!/bin/zsh
+# ========================================
+# Antidote Plugin Manager Setup
+# ========================================
 
+# Install Antidote if not present
+ANTIDOTE_HOME="${ZDOTDIR:-$HOME}/.antidote"
+if [[ ! -d "$ANTIDOTE_HOME" ]]; then
+  echo "Installing Antidote..."
+  git clone --depth=1 https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
+fi
+
+# Source Antidote
+source "$ANTIDOTE_HOME/antidote.zsh"
+
+# Load plugins from static file (faster startup)
+ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
+ANTIDOTE_PLUGIN_LIST="${ZDOTDIR:-$HOME}/.dotfiles/zsh/zsh_plugins.txt"
+
+# Generate static plugin file if needed
+if [[ ! -f "$ANTIDOTE_PLUGINS" || "$ANTIDOTE_PLUGIN_LIST" -nt "$ANTIDOTE_PLUGINS" ]]; then
+  antidote bundle <"$ANTIDOTE_PLUGIN_LIST" >|"$ANTIDOTE_PLUGINS"
+fi
+
+source "$ANTIDOTE_PLUGINS"
+
+# ========================================
+# Zsh Core Settings
+# ========================================
+
+# Colors
 export LSCOLORS='gxfxcxdxbxegedabagacag'
 export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
 
-# History
+autoload -Uz colors
+colors
+
+# ========================================
+# History Configuration
+# ========================================
+
 export HISTCONTROL="ignoreboth"
 HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
 HISTSIZE=500000
 SAVEHIST=500000
+setopt append_history
+setopt extended_history
 setopt hist_ignore_dups
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
@@ -19,7 +55,25 @@ setopt hist_reduce_blanks
 setopt hist_no_store
 setopt share_history
 
-# PATH
+# ========================================
+# Editor and Key Bindings
+# ========================================
+
+# Emacs key bindings (same as Prezto config)
+bindkey -e
+
+# History search bindings
+bindkey '^S' history-incremental-search-forward
+bindkey '^R' history-incremental-search-backward
+
+# History substring search (arrow keys)
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# ========================================
+# PATH Configuration
+# ========================================
+
 path=(
   $HOME/.local/bin(N-/)
   $HOME/bin(N-/)
@@ -29,7 +83,10 @@ path=(
   $path
 )
 
-# Homebrew
+# ========================================
+# Homebrew Integration
+# ========================================
+
 if ( type brew &>/dev/null ); then
   eval "$(brew shellenv)"
   fpath=(
@@ -38,7 +95,10 @@ if ( type brew &>/dev/null ); then
   )
 fi
 
-# asdf-vm
+# ========================================
+# asdf-vm Integration
+# ========================================
+
 if ( type asdf &>/dev/null ); then
   fpath=(
     ${ASDF_DATA_DIR:-$HOME/.asdf}/completions(N-/)
@@ -46,7 +106,10 @@ if ( type asdf &>/dev/null ); then
   )
 fi
 
-# Completion
+# ========================================
+# Completion System
+# ========================================
+
 setopt auto_menu
 
 fpath=(
@@ -68,9 +131,33 @@ zstyle ':completion:*:sudo:*' command-path \
   /bin \
   /usr/X11R6/bin
 
-# Colors
-autoload -Uz colors
-colors
+# Initialize completion system
+autoload -Uz compinit
+
+local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
+
+if [[ ! -f "$zcd_file" || -n "$zcd_file"(#qN.m+1) ]]; then
+  # Regenerate .zcompdump if it's more than a day old.
+  compinit
+else
+  # Otherwise, initialize with the cache for faster startup.
+  compinit -C
+fi
+
+# ========================================
+# Plugin-Specific Configuration
+# ========================================
+
+# SSH Agent plugin configuration
+zstyle :omz:plugins:ssh-agent agent-forwarding on
+zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
+
+# Git log custom format (matches Prezto config)
+alias gl="git log --graph --pretty=format:'%C(green)%h%C(reset) %cd %C(blue)%cn%C(reset) %s%C(red)%d%C(reset)%n' --date=short"
+
+# ========================================
+# Platform-Specific Settings
+# ========================================
 
 case $OSTYPE in
   darwin*)
@@ -86,7 +173,10 @@ case $OSTYPE in
     ;;
 esac
 
-# Misc options
+# ========================================
+# Misc Options
+# ========================================
+
 setopt print_eight_bit
 setopt no_beep
 setopt no_flow_control
@@ -102,16 +192,41 @@ setopt no_auto_cd
 setopt no_correct
 setopt no_correct_all
 
-# Key bindings
-bindkey '^S' history-incremental-search-forward
-bindkey '^R' history-incremental-search-backward
+# ========================================
+# Terminal Title
+# ========================================
 
-#
+# Auto set terminal title (matches Prezto terminal module behavior)
+chpwd() {
+  print -Pn "\e]2;%n@%m: %~\a"  # Window title
+  print -Pn "\e]1;%m: %~\a"     # Tab title
+}
+
+# Set title on initial load
+chpwd
+
+# ========================================
+# Tmux Auto-start
+# ========================================
+
+# Auto start tmux session (matches Prezto tmux module behavior)
+if [[ -z "$TMUX" ]] && { [[ -n "$SSH_TTY" ]] || [[ -z "$SSH_TTY" && -t 0 ]] }; then
+  if command -v tmux &>/dev/null; then
+    tmux attach-session -t default || tmux new-session -s default
+  fi
+fi
+
+# ========================================
 # Aliases and Functions
-#
+# ========================================
+
 function gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}
 alias awsec2ls="aws ec2 describe-instances --filter \"Name=instance-state-name,Values=running\" --query 'Reservations[].Instances[].{Name: (Tags[?Key==\`Name\`].Value|[0]), InstanceId: InstanceId}'"
 alias gpf='git push --force-if-includes'
+
+# ========================================
+# Load Local Configuration Files
+# ========================================
 
 # Load local path settings
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.path" ]]; then
@@ -121,19 +236,6 @@ fi
 # Load local environment variables and aliases
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
-fi
-
-# Initialize completion system if cache is not available or outdated
-autoload -Uz compinit
-
-local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
-
-if [[ ! -f "$zcd_file" || -n "$zcd_file"(#qN.m+1) ]]; then
-  # Regenerate .zcompdump if it's more than a day old.
-  compinit
-else
-  # Otherwise, initialize with the cache for faster startup.
-  compinit -C
 fi
 
 # Load local settings that should be run after compinit (tool initializations)
