@@ -185,13 +185,13 @@ case $OSTYPE in
   darwin*)
     export CLICOLOR=1
     if (type gls >/dev/null 2>&1); then
-      alias ls="${aliases[ls]:-ls} -F --color=auto --time-style=long-iso"
+      alias ls="ls -F --color=auto --time-style=long-iso"
     else
-      alias ls="${aliases[ls]:-ls} -G -F -T"
+      alias ls="ls -G -F -T"
     fi
     ;;
   linux*|msys*)
-    alias ls="${aliases[ls]:-ls} -F --color=auto --time-style=long-iso"
+    alias ls="ls -F --color=auto --time-style=long-iso"
     ;;
 esac
 
