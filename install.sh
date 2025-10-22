@@ -9,7 +9,7 @@ fi
 
 # zsh with Antidote
 if (type zsh >/dev/null 2>&1); then
-  zsh _antidote.sh
+  zsh setup-zsh.sh
 fi
 
 # vim
@@ -52,7 +52,17 @@ fi
 ln -snf "${DOTFILES_DIR}/direnvrc" "${HOME}/.direnvrc"
 
 # Create local config files from templates if they don't exist
-for tpl in $(find "${DOTFILES_DIR}/local-templates" -type f); do
+# Zsh templates
+for tpl in "${DOTFILES_DIR}"/zsh/templates/*; do
+  [[ -f "$tpl" ]] || continue
+  filename=$(basename "$tpl")
+  # Use -n to prevent overwriting existing files
+  cp -n "$tpl" "${HOME}/.${filename}"
+done
+
+# Other templates
+for tpl in "${DOTFILES_DIR}"/templates/*; do
+  [[ -f "$tpl" ]] || continue
   filename=$(basename "$tpl")
   # Use -n to prevent overwriting existing files
   cp -n "$tpl" "${HOME}/.${filename}"

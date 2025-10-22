@@ -10,12 +10,24 @@
 
 ## 導入
 
+### インストール手順
+
 ```bash
+# 1. dotfilesをクローン
 git clone https://github.com/hidekuro/dotfiles.git ~/dotfiles
+
+# 2. インストールスクリプトを実行
 zsh ~/dotfiles/install.sh
 ```
 
-初回起動時、Antidoteが自動的にインストールされ、プラグインがダウンロードされます。
+インストールスクリプトは以下を実行します：
+
+- Antidoteのインストール（未インストールの場合）
+- zsh設定ファイルのシンボリックリンク作成
+- vim、git、その他の設定ファイルのセットアップ
+- テンプレートファイルからローカル設定ファイルの作成
+
+初回起動時、プラグインが自動的にダウンロードされます。
 
 ## マシン固有の追加設定
 
@@ -49,7 +61,42 @@ fi
 eval "$(direnv hook zsh)"  # NG: direnvがない場合エラー
 ```
 
-詳細は `local-templates/zshrc.post` のテンプレートを参照してください。
+詳細は `zsh/templates/zshrc.post` のテンプレートを参照してください。
+
+## プラグインのカスタマイズ
+
+### プラグインの追加・削除
+
+プラグインは `zsh/zsh_plugins.txt` で管理されています。
+このファイルを編集してプラグインを追加・削除できます。
+
+```bash
+# 例：プラグインの追加
+echo "zsh-users/zsh-completions" >> ~/dotfiles/zsh/zsh_plugins.txt
+
+# 変更を反映（静的プラグインファイルの再生成）
+rm ~/.zsh_plugins.zsh
+exec zsh
+```
+
+### プラグインリストの書式
+
+```txt
+# Oh My Zshプラグイン
+ohmyzsh/ohmyzsh path:plugins/git
+
+# GitHubリポジトリ
+zsh-users/zsh-syntax-highlighting
+zsh-users/zsh-autosuggestions
+
+# 遅延読み込み
+olets/zsh-abbr kind:defer
+
+# プロンプトテーマ
+sindresorhus/pure kind:fpath
+```
+
+詳しくは [Antidote公式ドキュメント](https://getantidote.github.io/) を参照してください。
 
 ## トラブルシューティング
 
