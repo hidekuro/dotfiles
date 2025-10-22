@@ -1,5 +1,13 @@
 #!/bin/zsh
 # ========================================
+# Oh My Zsh Compatibility Variables
+# ========================================
+
+# Set up cache directory for Oh My Zsh plugins
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
+mkdir -p "$ZSH_CACHE_DIR/completions"
+
+# ========================================
 # Colors (set early for other modules)
 # ========================================
 
@@ -72,6 +80,15 @@ fi
 # asdf-vm Integration
 # ========================================
 
+# Source asdf if installed via Homebrew
+if [[ -f "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh" ]]; then
+  source "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
+# Or if installed directly
+elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+  source "$HOME/.asdf/asdf.sh"
+fi
+
+# Add asdf completions to fpath
 if ( type asdf &>/dev/null ); then
   fpath=(
     ${ASDF_DATA_DIR:-$HOME/.asdf}/completions(N-/)

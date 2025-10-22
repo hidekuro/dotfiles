@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Antidote setup script
-# This script replaces _prezto.sh for Antidote-based zsh configuration
+# This script sets up Antidote-based zsh configuration
 
 cd "$(dirname "$0")" || exit 1
 DOTFILES_DIR=$(pwd)
@@ -24,10 +24,18 @@ fi
 # Create symlink to dotfiles directory for plugin list access
 ln -snf "${DOTFILES_DIR}" "${ZDOTFILE}/.dotfiles"
 
-# Link zsh configuration files from prezto-override/runcoms
-for rcfile in "${DOTFILES_DIR}"/prezto-override/runcoms/^README.md(.N); do
+# Link zsh configuration files from zsh directory
+for rcfile in "${DOTFILES_DIR}"/zsh/(zshenv|zprofile|zshrc|zlogin|zlogout)(.N); do
   ln -snf "${rcfile}" "${ZDOTFILE}/.${rcfile:t}"
 done
 
 echo "Antidote setup complete!"
-echo "Please restart your shell or run 'source ~/.zshrc' to load the new configuration."
+echo ""
+echo "The following files have been linked:"
+echo "  ~/.zshenv  -> ${DOTFILES_DIR}/zsh/zshenv"
+echo "  ~/.zprofile -> ${DOTFILES_DIR}/zsh/zprofile"
+echo "  ~/.zshrc   -> ${DOTFILES_DIR}/zsh/zshrc"
+echo "  ~/.zlogin  -> ${DOTFILES_DIR}/zsh/zlogin"
+echo "  ~/.zlogout -> ${DOTFILES_DIR}/zsh/zlogout"
+echo ""
+echo "Please restart your shell or run 'exec zsh' to load the new configuration."
