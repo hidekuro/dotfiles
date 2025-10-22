@@ -5,7 +5,7 @@
 
 # Set up cache directory for Oh My Zsh plugins
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
-mkdir -p "$ZSH_CACHE_DIR/completions"
+mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
 
 # ========================================
 # Colors (set early for other modules)
@@ -14,8 +14,9 @@ mkdir -p "$ZSH_CACHE_DIR/completions"
 export LSCOLORS='gxfxcxdxbxegedabagacag'
 export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
 
+# Load colors module (suppress output)
 autoload -Uz colors
-colors
+colors 2>/dev/null
 
 # ========================================
 # History Configuration
@@ -52,6 +53,15 @@ bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
 # ========================================
+# Homebrew Integration (early initialization)
+# ========================================
+
+# Initialize Homebrew first to set HOMEBREW_PREFIX and PATH
+if ( type brew &>/dev/null ); then
+  eval "$(brew shellenv)"
+fi
+
+# ========================================
 # PATH Configuration
 # ========================================
 
@@ -64,12 +74,8 @@ path=(
   $path
 )
 
-# ========================================
-# Homebrew Integration
-# ========================================
-
-if ( type brew &>/dev/null ); then
-  eval "$(brew shellenv)"
+# Add Homebrew completion paths to fpath
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
   fpath=(
     $HOMEBREW_PREFIX/share/zsh/site-functions(N-/)
     $fpath

@@ -4,5 +4,30 @@
 # Use it for tool initializations that require `eval` or `source`,
 # especially those that set up shell completion.
 #
-# Example:
-# eval "$(gh completion -s zsh)"
+# IMPORTANT: Always check if commands exist before running them
+# to avoid "command not found" errors.
+
+# Example: GitHub CLI
+# if (( $+commands[gh] )); then
+#   eval "$(gh completion -s zsh)"
+# fi
+
+# Example: pipx (Python tool installer)
+# if (( $+commands[pipx] )); then
+#   eval "$(register-python-argcomplete pipx)"
+# fi
+
+# Example: direnv (directory environment manager)
+# if (( $+commands[direnv] )); then
+#   eval "$(direnv hook zsh)"
+# fi
+
+# Example: SDKMAN (Java/JVM tool manager)
+# if [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
+#   source "$HOME/.sdkman/bin/sdkman-init.sh"
+# fi
+
+# Example: 1Password CLI plugins
+# if [[ -s "$HOME/.config/op/plugins.sh" ]]; then
+#   source "$HOME/.config/op/plugins.sh"
+# fi

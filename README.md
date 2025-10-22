@@ -1,5 +1,7 @@
 # Dotfiles
 
+軽量なプラグインマネージャー [Antidote](https://github.com/mattmc3/antidote) を使用したzsh設定です。
+
 ## 必要環境
 
 - git
@@ -12,6 +14,8 @@
 git clone https://github.com/hidekuro/dotfiles.git ~/dotfiles
 zsh ~/dotfiles/install.sh
 ```
+
+初回起動時、Antidoteが自動的にインストールされ、プラグインがダウンロードされます。
 
 ## マシン固有の追加設定
 
@@ -29,6 +33,53 @@ zsh ~/dotfiles/install.sh
 | `~/.zshrc.post`     | ツールの初期化 (`eval`, `source`) | インタラクティブシェル起動時（`compinit` の後） |
 | `~/.zlogin.local`   | ログインシェル用の設定            | ログインシェル起動時（`zshrc` の後）            |
 | `~/.zlogout.local`  | ログアウト時の処理                | ログインシェル終了時                            |
+
+### ~/.zshrc.post の推奨記法
+
+`~/.zshrc.post` は補完システム（compinit）の後に読み込まれるため、ツールの初期化に適しています。
+ただし、コマンドが存在しない場合のエラーを避けるため、必ず存在確認を行ってください：
+
+```zsh
+# 良い例：コマンドの存在を確認
+if (( $+commands[direnv] )); then
+  eval "$(direnv hook zsh)"
+fi
+
+# 悪い例：コマンドが存在しない場合エラーになる
+eval "$(direnv hook zsh)"  # NG: direnvがない場合エラー
+```
+
+詳細は `local-templates/zshrc.post` のテンプレートを参照してください。
+
+## トラブルシューティング
+
+### "command not found: compdef" エラー
+
+補完システムのキャッシュを削除して再起動：
+
+```bash
+rm -f ~/.zcompdump* ~/.zsh_plugins.zsh
+exec zsh
+```
+
+### プラグインが読み込まれない
+
+Antidoteを再インストール：
+
+```bash
+rm -rf ~/.antidote ~/.zsh_plugins.zsh
+exec zsh
+```
+
+### "command not found: direnv" (またはその他のツール)
+
+`~/.zshrc.post` でコマンドの存在確認を追加：
+
+```zsh
+if (( $+commands[direnv] )); then
+  eval "$(direnv hook zsh)"
+fi
+```
 
 ## ライセンス
 
