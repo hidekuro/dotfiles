@@ -1,0 +1,257 @@
+#!/bin/zsh
+# ========================================
+# Oh My Zsh Compatibility Variables
+# ========================================
+
+# Set up cache directory for Oh My Zsh plugins
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
+mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
+
+# ========================================
+# Colors (set early for other modules)
+# ========================================
+
+export LSCOLORS='gxfxcxdxbxegedabagacag'
+export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
+
+# Load colors module (suppress output)
+autoload -Uz colors
+colors 2>/dev/null
+
+# ========================================
+# History Configuration
+# ========================================
+
+export HISTCONTROL="ignoreboth"
+HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
+HISTSIZE=500000
+SAVEHIST=500000
+setopt append_history
+setopt extended_history
+setopt hist_ignore_dups
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt hist_save_nodups
+setopt hist_find_no_dups
+setopt hist_reduce_blanks
+setopt hist_no_store
+setopt share_history
+
+# ========================================
+# Editor and Key Bindings
+# ========================================
+
+# Emacs key bindings (same as Prezto config)
+bindkey -e
+
+# History search bindings
+bindkey '^S' history-incremental-search-forward
+bindkey '^R' history-incremental-search-backward
+
+# History substring search (arrow keys)
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# ========================================
+# Homebrew Integration (early initialization)
+# ========================================
+
+# Initialize Homebrew first to set HOMEBREW_PREFIX and PATH
+if ( type brew &>/dev/null ); then
+  eval "$(brew shellenv)"
+fi
+
+# ========================================
+# PATH Configuration
+# ========================================
+
+path=(
+  $HOME/.local/bin(N-/)
+  $HOME/bin(N-/)
+  $HOMEBREW_PREFIX/opt/gnu-getopt/bin(N-/)
+  $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin(N-/)
+  $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin(N-/)
+  $path
+)
+
+# Add Homebrew completion paths to fpath
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+  fpath=(
+    $HOMEBREW_PREFIX/share/zsh/site-functions(N-/)
+    $fpath
+  )
+fi
+
+# ========================================
+# asdf-vm Integration
+# ========================================
+
+# Source asdf if installed via Homebrew
+if [[ -f "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh" ]]; then
+  source "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
+# Or if installed directly
+elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+  source "$HOME/.asdf/asdf.sh"
+fi
+
+# Add asdf completions to fpath
+if ( type asdf &>/dev/null ); then
+  fpath=(
+    ${ASDF_DATA_DIR:-$HOME/.asdf}/completions(N-/)
+    $fpath
+  )
+fi
+
+# ========================================
+# Completion System Setup (BEFORE plugins)
+# ========================================
+
+setopt auto_menu
+
+fpath=(
+  /usr/local/share/zsh-completions(N-/)
+  /usr/local/share/zsh/site-functions(N-/)
+  /usr/share/zsh/site-functions(N-/)
+  /usr/share/zsh/vendor-completions(N-/)
+  ${ZDOTDIR:-$HOME}/.zsh/completions(N-/)
+  $fpath
+)
+
+zstyle ':completion:*' ignore-parents parent pwd ..
+zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
+zstyle ':completion:*:sudo:*' command-path \
+  /usr/local/sbin \
+  /usr/local/bin \
+  /usr/sbin \
+  /usr/bin \
+  /sbin \
+  /bin \
+  /usr/X11R6/bin
+
+# Initialize completion system BEFORE loading plugins
+autoload -Uz compinit
+
+local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
+
+if [[ ! -f "$zcd_file" || -n "$zcd_file"(#qN.m+1) ]]; then
+  # Regenerate .zcompdump if it's more than a day old.
+  compinit
+else
+  # Otherwise, initialize with the cache for faster startup.
+  compinit -C
+fi
+
+# ========================================
+# Antidote Plugin Manager Setup
+# ========================================
+
+# Install Antidote if not present
+ANTIDOTE_HOME="${ZDOTDIR:-$HOME}/.antidote"
+if [[ ! -d "$ANTIDOTE_HOME" ]]; then
+  echo "Installing Antidote..."
+  git clone --depth=1 https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
+fi
+
+# Source Antidote
+source "$ANTIDOTE_HOME/antidote.zsh"
+
+# Load plugins from static file (faster startup)
+ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
+ANTIDOTE_PLUGIN_LIST="${ZDOTDIR:-$HOME}/.dotfiles/zsh/zsh_plugins.txt"
+
+# Generate static plugin file if needed
+if [[ ! -f "$ANTIDOTE_PLUGINS" || "$ANTIDOTE_PLUGIN_LIST" -nt "$ANTIDOTE_PLUGINS" ]]; then
+  antidote bundle <"$ANTIDOTE_PLUGIN_LIST" >|"$ANTIDOTE_PLUGINS"
+fi
+
+source "$ANTIDOTE_PLUGINS"
+
+# ========================================
+# Plugin-Specific Configuration
+# ========================================
+
+# SSH Agent plugin configuration
+zstyle :omz:plugins:ssh-agent agent-forwarding on
+zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
+
+# Git log custom format (matches Prezto config)
+alias gl="git log --graph --pretty=format:'%C(green)%h%C(reset) %cd %C(blue)%cn%C(reset) %s%C(red)%d%C(reset)%n' --date=short"
+
+# ========================================
+# Platform-Specific Settings
+# ========================================
+
+case $OSTYPE in
+  darwin*)
+    export CLICOLOR=1
+    if (type gls >/dev/null 2>&1); then
+      alias ls="ls -F --color=auto --time-style=long-iso"
+    else
+      alias ls="ls -G -F -T"
+    fi
+    ;;
+  linux*|msys*)
+    alias ls="ls -F --color=auto --time-style=long-iso"
+    ;;
+esac
+
+# ========================================
+# Misc Options
+# ========================================
+
+setopt print_eight_bit
+setopt no_beep
+setopt no_flow_control
+setopt interactive_comments
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt rm_star_silent
+
+# Fix annoying settings
+setopt no_extended_glob
+setopt clobber
+setopt no_auto_cd
+setopt no_correct
+setopt no_correct_all
+
+# ========================================
+# Terminal Title
+# ========================================
+
+# Auto set terminal title (matches Prezto terminal module behavior)
+# Note: Pure prompt handles terminal title, so we only set this if Pure is not loaded
+if ! typeset -f prompt_pure_precmd &>/dev/null; then
+  chpwd() {
+    print -Pn "\e]2;%n@%m: %~\a"  # Window title
+    print -Pn "\e]1;%m: %~\a"     # Tab title
+  }
+  # Set title on initial load
+  chpwd
+fi
+
+# ========================================
+# Aliases and Functions
+# ========================================
+
+function gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}
+alias awsec2ls="aws ec2 describe-instances --filter \"Name=instance-state-name,Values=running\" --query 'Reservations[].Instances[].{Name: (Tags[?Key==\`Name\`].Value|[0]), InstanceId: InstanceId}'"
+alias gpf='git push --force-if-includes'
+
+# ========================================
+# Load Local Configuration Files
+# ========================================
+
+# Load local path settings
+if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.path" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.path"
+fi
+
+# Load local environment variables and aliases
+if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.local"
+fi
+
+# Load local settings that should be run after compinit (tool initializations)
+if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.post" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.post"
+fi

@@ -7,14 +7,9 @@ if ! (type git >/dev/null 2>&1); then
   exit 1
 fi
 
-# bash
-ln -snf "${DOTFILES_DIR}/bash/bash_profile" "${HOME}/.bash_profile"
-ln -snf "${DOTFILES_DIR}/bash/bashrc" "${HOME}/.bashrc"
-ln -snf "${DOTFILES_DIR}/bash/bash_aliases" "${HOME}/.bash_aliases"
-
-# prezto
+# zsh with Antidote
 if (type zsh >/dev/null 2>&1); then
-  zsh _prezto.sh
+  zsh _antidote.sh
 fi
 
 # vim
@@ -52,10 +47,6 @@ if (type brew >/dev/null 2>&1); then
     ;;
   esac
 fi
-
-# tmux
-mkdir -p "${HOME}/.tmux"
-ln -snf "${DOTFILES_DIR}/tmux/tmux.conf" "${HOME}/.tmux.conf"
 
 # direnv
 ln -snf "${DOTFILES_DIR}/direnvrc" "${HOME}/.direnvrc"

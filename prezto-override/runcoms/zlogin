@@ -1,7 +1,0 @@
-# Load original
-source "${ZDOTDIR:-$HOME}/.zprezto/runcoms/zlogin"
-
-# Load machine-local zlogin if exists.
-if [[ -s "${ZDOTDIR:-$HOME}/.zlogin.local" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zlogin.local"
-fi

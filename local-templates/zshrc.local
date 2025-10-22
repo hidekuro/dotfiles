@@ -3,7 +3,11 @@
 # This file is loaded by interactive shells before compinit.
 # Use it for basic shell settings like aliases and environment variables
 # that don't depend on completion.
-#
-# Example:
+
+# Common ls aliases (inherit platform-specific ls settings)
+alias ll="${aliases[ls]:-ls} -lh"
+alias la="${aliases[ls]:-ls} -lAh"
+
+# Additional examples:
 # export EDITOR="vim"
-# alias ls="ls -A -F --color=auto"
+# alias grep="grep --color=auto"
