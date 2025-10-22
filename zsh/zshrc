@@ -263,20 +263,10 @@ alias gpf='git push --force-if-includes'
 alias sa='alias | grep'
 
 # ========================================
-# Load Local Configuration Files
+# Load Local Configuration
 # ========================================
 
-# Load local path settings
-if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.path" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zshrc.path"
-fi
-
-# Load local environment variables and aliases
+# Load local customizations (PATH, environment variables, tool initializations)
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
-fi
-
-# Load local settings that should be run after compinit (tool initializations)
-if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.post" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zshrc.post"
 fi

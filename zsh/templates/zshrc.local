@@ -1,13 +1,70 @@
 # ~/.zshrc.local
 #
-# This file is loaded by interactive shells before compinit.
-# Use it for basic shell settings like aliases and environment variables
-# that don't depend on completion.
+# This file is loaded at the end of zshrc for local customizations.
+# Use it for PATH modifications, environment variables, aliases, and tool initializations.
+#
+# IMPORTANT: Always check if commands exist before running them
+# to avoid "command not found" errors.
+
+# ========================================
+# PATH Configuration
+# ========================================
+
+# Example: Add custom binary directories
+# path=(
+#   /opt/my-custom-tool/bin
+#   $path
+# )
+
+# Example: Add custom completion directories
+# fpath=(
+#   $HOME/.my-completions
+#   $fpath
+# )
+
+# ========================================
+# Environment Variables
+# ========================================
+
+# Example: Set default editor
+# export EDITOR="vim"
+
+# ========================================
+# Aliases
+# ========================================
 
 # Common ls aliases (inherit platform-specific ls settings)
 alias ll="${aliases[ls]:-ls} -lh"
 alias la="${aliases[ls]:-ls} -lAh"
 
-# Additional examples:
-# export EDITOR="vim"
+# Example: Colored grep
 # alias grep="grep --color=auto"
+
+# ========================================
+# Tool Initializations
+# ========================================
+
+# Example: GitHub CLI
+# if (( $+commands[gh] )); then
+#   eval "$(gh completion -s zsh)"
+# fi
+
+# Example: pipx (Python tool installer)
+# if (( $+commands[pipx] )); then
+#   eval "$(register-python-argcomplete pipx)"
+# fi
+
+# Example: direnv (directory environment manager)
+# if (( $+commands[direnv] )); then
+#   eval "$(direnv hook zsh)"
+# fi
+
+# Example: SDKMAN (Java/JVM tool manager)
+# if [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
+#   source "$HOME/.sdkman/bin/sdkman-init.sh"
+# fi
+
+# Example: 1Password CLI plugins
+# if [[ -s "$HOME/.config/op/plugins.sh" ]]; then
+#   source "$HOME/.config/op/plugins.sh"
+# fi
