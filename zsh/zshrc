@@ -150,6 +150,11 @@ zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:warnings' format 'No matches for: %d'
 zstyle ':completion:*' group-name ''
 
+# Enable completion menu and description display
+zstyle ':completion:*' menu select
+zstyle ':completion:*' format '%d'
+zstyle ':completion:*' list-separator ' -- '
+
 # Show alias definitions in completion descriptions
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
 
@@ -199,18 +204,25 @@ source "$ANTIDOTE_PLUGINS"
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
 
-# Custom function to show alias definitions in completions
+# Custom function to show alias definitions alongside normal command completions
 _describe_alias() {
   local -a aliases_with_desc
-  local alias_name alias_def
+  local ret=1
 
   # Get all aliases and format them with their definitions
-  for alias_name in ${(k)aliases}; do
+  local alias_name alias_def
+  for alias_name in "${(@k)aliases}"; do
     alias_def="${aliases[$alias_name]}"
-    aliases_with_desc+=("$alias_name:$alias_def")
+    aliases_with_desc+=("${alias_name}:${alias_def}")
   done
 
-  _describe -t aliases 'alias' aliases_with_desc
+  # Show aliases with descriptions, then let default completion handle the rest
+  _describe -t aliases 'alias' aliases_with_desc && ret=0
+  _command_names -e && ret=0
+  compadd -k builtins && ret=0
+  compadd -k functions && ret=0
+
+  return ret
 }
 
 # Register the custom completion function for command position
