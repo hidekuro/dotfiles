@@ -11,10 +11,16 @@ setopt no_global_rcs
 # ========================================
 # Initialize Homebrew early to make it available for all shell sessions
 # This follows Homebrew's official recommendation for zsh
+# Supports: macOS (Apple Silicon & Intel), Linux/WSL (Linuxbrew)
 if [[ -x /opt/homebrew/bin/brew ]]; then
+  # macOS Apple Silicon
   eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -x /usr/local/bin/brew ]]; then
+  # macOS Intel
   eval "$(/usr/local/bin/brew shellenv)"
+elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  # Linux/WSL (Linuxbrew)
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # Load machine-local zshenv if exists.

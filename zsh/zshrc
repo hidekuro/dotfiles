@@ -57,17 +57,23 @@ bindkey '^[[B' history-substring-search-down
 # ========================================
 # Note: Homebrew is initialized in ~/.zshenv for early availability
 
+# Common paths (all platforms)
 path=(
   $HOME/.local/bin(N-/)
   $HOME/bin(N-/)
-  $HOMEBREW_PREFIX/opt/gnu-getopt/bin(N-/)
-  $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin(N-/)
-  $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin(N-/)
   $path
 )
 
-# Add Homebrew completion paths to fpath
+# Homebrew: Add GNU utilities (if Homebrew/Linuxbrew is installed)
 if [[ -n "$HOMEBREW_PREFIX" ]]; then
+  path=(
+    $HOMEBREW_PREFIX/opt/gnu-getopt/bin(N-/)
+    $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin(N-/)
+    $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin(N-/)
+    $path
+  )
+
+  # Add Homebrew/Linuxbrew completion paths to fpath
   fpath=(
     $HOMEBREW_PREFIX/share/zsh/site-functions(N-/)
     $fpath
@@ -100,14 +106,31 @@ fi
 
 setopt auto_menu
 
+# Add completion directories to fpath
+# Note: Homebrew completions are added above when HOMEBREW_PREFIX is set
 fpath=(
-  /usr/local/share/zsh-completions(N-/)
-  /usr/local/share/zsh/site-functions(N-/)
-  /usr/share/zsh/site-functions(N-/)
-  /usr/share/zsh/vendor-completions(N-/)
-  ${ZDOTDIR:-$HOME}/.zsh/completions(N-/)
+  $ZSH_CACHE_DIR/completions(N-/)         # Oh My Zsh plugin completions
+  ${ZDOTDIR:-$HOME}/.zsh/completions(N-/) # User custom completions (gh, op, poetry)
   $fpath
 )
+
+# Platform-specific completion paths
+case $OSTYPE in
+  darwin*)
+    # macOS: System-wide completions
+    fpath+=(
+      /usr/share/zsh/site-functions(N-/)
+    )
+    ;;
+  linux*)
+    # Linux/WSL: Common completion directories
+    fpath+=(
+      /usr/share/zsh/site-functions(N-/)
+      /usr/share/zsh/vendor-completions(N-/)
+      /usr/local/share/zsh/site-functions(N-/)
+    )
+    ;;
+esac
 
 zstyle ':completion:*' ignore-parents parent pwd ..
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
