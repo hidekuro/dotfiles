@@ -4,8 +4,9 @@
 
 set -e
 
+# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
-DOTFILES_DIR=$(pwd)
+REPO_ROOT=$(pwd)
 ZDOTDIR="${ZDOTDIR:-${HOME}}"
 
 setopt extended_glob
@@ -25,18 +26,18 @@ fi
 
 # Create symlink to dotfiles directory for plugin list access
 echo "  Creating dotfiles symlink..."
-ln -snf "${DOTFILES_DIR}" "${ZDOTDIR}/.dotfiles"
+ln -snf "${REPO_ROOT}" "${ZDOTDIR}/.dotfiles"
 
 # Link zsh configuration files
 echo "  Linking zsh configuration files..."
-for rcfile in "${DOTFILES_DIR}"/zsh/(zshenv|zprofile|zshrc|zlogin|zlogout)(.N); do
+for rcfile in "${REPO_ROOT}"/zsh/(zshenv|zprofile|zshrc|zlogin|zlogout)(.N); do
   target="${ZDOTDIR}/.${rcfile:t}"
   ln -snf "${rcfile}" "${target}"
 done
 
 # Create local config files from templates if they don't exist
 echo "  Creating local config files from templates..."
-for tpl in "${DOTFILES_DIR}"/zsh/templates/*(.N); do
+for tpl in "${REPO_ROOT}"/zsh/templates/*(.N); do
   filename=$(basename "$tpl")
   target="${ZDOTDIR}/.${filename}"
   # Use -n to prevent overwriting existing files

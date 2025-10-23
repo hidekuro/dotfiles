@@ -4,11 +4,12 @@
 
 set -e
 
+# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
-DOTFILES_DIR=$(pwd)
+REPO_ROOT=$(pwd)
 
 echo "Setting up EditorConfig..."
 
-ln -snf "${DOTFILES_DIR}/editorconfig" "${HOME}/.editorconfig"
+ln -snf "${REPO_ROOT}/editorconfig" "${HOME}/.editorconfig"
 
 echo "✓ EditorConfig setup complete!"

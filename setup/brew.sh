@@ -4,8 +4,9 @@
 
 set -e
 
+# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
-DOTFILES_DIR=$(pwd)
+REPO_ROOT=$(pwd)
 
 if ! (type brew >/dev/null 2>&1); then
   echo "⊘ Homebrew not found, skipping setup"
@@ -16,11 +17,11 @@ echo "Setting up Homebrew configuration..."
 
 case "${OSTYPE}" in
 darwin*)
-  ln -snf "${DOTFILES_DIR}/Brewfile-macos" "${HOME}/.Brewfile"
+  ln -snf "${REPO_ROOT}/Brewfile-macos" "${HOME}/.Brewfile"
   echo "  Linked Brewfile-macos"
   ;;
 *)
-  ln -snf "${DOTFILES_DIR}/Brewfile-linux" "${HOME}/.Brewfile"
+  ln -snf "${REPO_ROOT}/Brewfile-linux" "${HOME}/.Brewfile"
   echo "  Linked Brewfile-linux"
   ;;
 esac

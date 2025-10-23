@@ -4,8 +4,9 @@
 
 set -e
 
+# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
-DOTFILES_DIR=$(pwd)
+REPO_ROOT=$(pwd)
 
 setopt extended_glob
 setopt clobber
@@ -23,7 +24,7 @@ GIT_TAG_GPGSIGN=$(git config --global tag.gpgSign 2>/dev/null || true)
 
 # Copy main gitconfig
 echo "  Copying gitconfig..."
-cp -f "${DOTFILES_DIR}/gitconfig" "${HOME}/.gitconfig"
+cp -f "${REPO_ROOT}/gitconfig" "${HOME}/.gitconfig"
 
 # Restore user-specific settings
 echo "  Restoring user-specific settings..."
@@ -39,12 +40,12 @@ git config --global include.path "${HOME}/.gitconfig.local"
 # Setup gitignore
 echo "  Setting up global gitignore..."
 mkdir -p "${HOME}/.config/git"
-ln -snf "${DOTFILES_DIR}/gitignore" "${HOME}/.config/git/ignore"
+ln -snf "${REPO_ROOT}/gitignore" "${HOME}/.config/git/ignore"
 
 # Create local config file from template if it doesn't exist
 echo "  Creating local config file from template..."
 if [[ ! -f "${HOME}/.gitconfig.local" ]]; then
-  cp "${DOTFILES_DIR}/templates/gitconfig.local" "${HOME}/.gitconfig.local"
+  cp "${REPO_ROOT}/templates/gitconfig.local" "${HOME}/.gitconfig.local"
   echo "    Created ~/.gitconfig.local"
 fi
 

@@ -4,11 +4,12 @@
 
 set -e
 
+# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
-DOTFILES_DIR=$(pwd)
+REPO_ROOT=$(pwd)
 
 echo "Setting up direnv configuration..."
 
-ln -snf "${DOTFILES_DIR}/direnvrc" "${HOME}/.direnvrc"
+ln -snf "${REPO_ROOT}/direnvrc" "${HOME}/.direnvrc"
 
 echo "✓ direnv setup complete!"

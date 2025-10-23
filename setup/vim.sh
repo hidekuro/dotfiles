@@ -4,12 +4,13 @@
 
 set -e
 
+# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
-DOTFILES_DIR=$(pwd)
+REPO_ROOT=$(pwd)
 
 echo "Setting up vim configuration..."
 
 mkdir -p "${HOME}/.vim/colors"
-ln -snf "${DOTFILES_DIR}/vimrc" "${HOME}/.vimrc"
+ln -snf "${REPO_ROOT}/vimrc" "${HOME}/.vimrc"
 
 echo "✓ Vim setup complete!"
