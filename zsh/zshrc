@@ -48,10 +48,6 @@ bindkey -e
 bindkey '^S' history-incremental-search-forward
 bindkey '^R' history-incremental-search-backward
 
-# History substring search (arrow keys)
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-
 # ========================================
 # PATH Configuration
 # ========================================
@@ -203,6 +199,11 @@ source "$ANTIDOTE_PLUGINS"
 # SSH Agent plugin configuration
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
+
+# History substring search key bindings (after plugin load)
+# Note: Must be set AFTER zsh-history-substring-search plugin is loaded
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
 
 # Custom function to show alias definitions alongside normal command completions
 _describe_alias() {
