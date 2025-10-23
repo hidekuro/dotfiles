@@ -52,6 +52,10 @@ setopt share_history
 # Emacs key bindings (same as Prezto config)
 bindkey -e
 
+# Standard key bindings (from Prezto editor module)
+bindkey '^[[3~' delete-char              # Delete
+bindkey '^[3;5~' delete-char             # Delete (some terminals)
+
 # History search bindings
 bindkey '^S' history-incremental-search-forward
 bindkey '^R' history-incremental-search-backward
