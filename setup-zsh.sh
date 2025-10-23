@@ -34,6 +34,18 @@ for rcfile in "${DOTFILES_DIR}"/zsh/(zshenv|zprofile|zshrc|zlogin|zlogout)(.N); 
   ln -snf "${rcfile}" "${target}"
 done
 
+# Create local config files from templates if they don't exist
+echo "  Creating local config files from templates..."
+for tpl in "${DOTFILES_DIR}"/zsh/templates/*(.N); do
+  filename=$(basename "$tpl")
+  target="${ZDOTDIR}/.${filename}"
+  # Use -n to prevent overwriting existing files
+  if [[ ! -f "$target" ]]; then
+    cp "$tpl" "$target"
+    echo "    Created ${target}"
+  fi
+done
+
 echo ""
 echo "✓ Zsh setup complete!"
 echo ""

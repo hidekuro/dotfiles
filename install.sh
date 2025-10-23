@@ -17,21 +17,9 @@ mkdir -pv "${HOME}/.vim/colors"
 ln -snf "${DOTFILES_DIR}/vimrc" "${HOME}/.vimrc"
 
 # git
-GIT_USER_NAME=$(git config --global user.name)
-GIT_USER_EMAIL=$(git config --global user.email)
-GIT_USER_SIGNINGKEY=$(git config --global user.signingKey)
-GIT_COMMIT_GPGSIGN=$(git config --global commit.gpgSign)
-GIT_TAG_GPGSIGN=$(git config --global tag.gpgSign)
-cp -f "${DOTFILES_DIR}/gitconfig" "${HOME}/.gitconfig"
-[[ -n ${GIT_USER_NAME} ]] && git config --global user.name "${GIT_USER_NAME}"
-[[ -n ${GIT_USER_EMAIL} ]] && git config --global user.email "${GIT_USER_EMAIL}"
-[[ -n ${GIT_USER_SIGNINGKEY} ]] && git config --global user.signingKey "${GIT_USER_SIGNINGKEY}"
-[[ -n ${GIT_COMMIT_GPGSIGN} ]] && git config --global commit.gpgSign "${GIT_COMMIT_GPGSIGN}"
-[[ -n ${GIT_TAG_GPGSIGN} ]] && git config --global tag.gpgSign "${GIT_TAG_GPGSIGN}"
-git config --global include.path "${HOME}/.gitconfig.local"
-mkdir -p "${HOME}/.config/git"
-ln -snf "${DOTFILES_DIR}/gitignore" "${HOME}/.config/git/ignore"
-unset GIT_USER_NAME GIT_USER_MAIL GIT_USER_SIGNINGKEY GIT_COMMIT_GPGSIGN
+if (type zsh >/dev/null 2>&1); then
+  zsh setup-git.sh
+fi
 
 # editorconfig
 ln -snf "${DOTFILES_DIR}/editorconfig" "${HOME}/.editorconfig"
@@ -50,20 +38,3 @@ fi
 
 # direnv
 ln -snf "${DOTFILES_DIR}/direnvrc" "${HOME}/.direnvrc"
-
-# Create local config files from templates if they don't exist
-# Zsh templates
-for tpl in "${DOTFILES_DIR}"/zsh/templates/*; do
-  [[ -f "$tpl" ]] || continue
-  filename=$(basename "$tpl")
-  # Use -n to prevent overwriting existing files
-  cp -n "$tpl" "${HOME}/.${filename}"
-done
-
-# Other templates
-for tpl in "${DOTFILES_DIR}"/templates/*; do
-  [[ -f "$tpl" ]] || continue
-  filename=$(basename "$tpl")
-  # Use -n to prevent overwriting existing files
-  cp -n "$tpl" "${HOME}/.${filename}"
-done
