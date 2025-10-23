@@ -7,6 +7,14 @@
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
 mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
 
+# Detect if we should enable SSH agent management
+# Disable in DevContainers/Codespaces as they forward the host's SSH agent
+if [[ -z "$REMOTE_CONTAINERS" && -z "$CODESPACES" ]]; then
+  enable_ssh_agent=true
+else
+  enable_ssh_agent=false
+fi
+
 # ========================================
 # Colors (set early for other modules)
 # ========================================
@@ -181,6 +189,14 @@ fi
 # Source Antidote
 source "$ANTIDOTE_HOME/antidote.zsh"
 
+# Set plugin loading prefix based on SSH agent availability
+# In DevContainers/Codespaces, comment out the ssh-agent plugin line
+if [[ "$enable_ssh_agent" == "true" ]]; then
+  _comment_if_devcontainer=''
+else
+  _comment_if_devcontainer='#'
+fi
+
 # Load plugins from static file (faster startup)
 ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
 ANTIDOTE_PLUGIN_LIST="${ZDOTDIR:-$HOME}/.dotfiles/zsh/zsh_plugins.txt"
@@ -196,9 +212,11 @@ source "$ANTIDOTE_PLUGINS"
 # Plugin-Specific Configuration
 # ========================================
 
-# SSH Agent plugin configuration
-zstyle :omz:plugins:ssh-agent agent-forwarding on
-zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
+# SSH Agent plugin configuration (only if plugin is loaded)
+if [[ "$enable_ssh_agent" == "true" ]]; then
+  zstyle :omz:plugins:ssh-agent agent-forwarding on
+  zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
+fi
 
 # History substring search key bindings (after plugin load)
 # Note: Must be set AFTER zsh-history-substring-search plugin is loaded

@@ -15,21 +15,34 @@ export LESS='-g -i -M -R -S -z-4'
 # SSH Agent Setup
 # ========================================
 # Note: The Oh My Zsh ssh-agent plugin will handle most of the ssh-agent
-# management. This section is kept for compatibility with environments
-# where the plugin might not be loaded yet (e.g., VSCode Remote Containers)
+# management. This section is kept for compatibility with non-DevContainer
+# environments where the plugin might not be loaded yet.
+#
+# In DevContainers/Codespaces, SSH agent is forwarded from the host,
+# so we skip this manual setup to avoid the "~/.ssh directory not found" warning.
 
-# https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_using-ssh-keys
-if [ -z "$SSH_AUTH_SOCK" ]; then
-  # Check for a currently running instance of the agent
-  RUNNING_AGENT="$(ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]')"
-  if [ "$RUNNING_AGENT" = "0" ]; then
-    # Launch a new instance of the agent
-    ssh-agent -s | sed '/^echo /d' &> $HOME/.ssh/ssh-agent
-  fi
-  eval "$(cat $HOME/.ssh/ssh-agent)" 2>/dev/null
+# Detect if we should enable SSH agent management
+# Disable in DevContainers/Codespaces as they forward the host's SSH agent
+if [[ -z "$REMOTE_CONTAINERS" && -z "$CODESPACES" ]]; then
+  enable_ssh_agent=true
+else
+  enable_ssh_agent=false
 fi
 
-ssh-add 2>/dev/null
+# https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_using-ssh-keys
+if [[ "$enable_ssh_agent" == "true" ]]; then
+  if [ -z "$SSH_AUTH_SOCK" ]; then
+    # Check for a currently running instance of the agent
+    RUNNING_AGENT="$(ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]')"
+    if [ "$RUNNING_AGENT" = "0" ]; then
+      # Launch a new instance of the agent
+      ssh-agent -s | sed '/^echo /d' &> $HOME/.ssh/ssh-agent
+    fi
+    eval "$(cat $HOME/.ssh/ssh-agent)" 2>/dev/null
+  fi
+
+  ssh-add 2>/dev/null
+fi
 
 # ========================================
 # Load Local Configuration
