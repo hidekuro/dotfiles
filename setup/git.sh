@@ -37,6 +37,20 @@ echo "  Restoring user-specific settings..."
 # Setup local config include
 git config --global include.path "${HOME}/.gitconfig.local"
 
+# Configure SSH signing if Git version supports it (2.34.0+)
+echo "  Checking Git version for SSH signing support..."
+GIT_VERSION=$(git --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+GIT_MAJOR=$(echo "${GIT_VERSION}" | cut -d. -f1)
+GIT_MINOR=$(echo "${GIT_VERSION}" | cut -d. -f2)
+
+if [[ ${GIT_MAJOR} -gt 2 ]] || [[ ${GIT_MAJOR} -eq 2 && ${GIT_MINOR} -ge 34 ]]; then
+  echo "    Git ${GIT_VERSION} supports SSH signing, enabling..."
+  git config --global gpg.format ssh
+else
+  echo "    Git ${GIT_VERSION} does not support SSH signing (requires 2.34.0+), skipping..."
+  git config --global --unset gpg.format 2>/dev/null || true
+fi
+
 # Setup gitignore
 echo "  Setting up global gitignore..."
 mkdir -p "${HOME}/.config/git"
