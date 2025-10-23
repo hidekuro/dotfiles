@@ -4,7 +4,7 @@
 
 set -e
 
-cd "$(dirname "$0")" || exit 1
+cd "$(dirname "$0")/.." || exit 1
 DOTFILES_DIR=$(pwd)
 ZDOTDIR="${ZDOTDIR:-${HOME}}"
 
