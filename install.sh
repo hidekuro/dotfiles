@@ -7,34 +7,30 @@ if ! (type git >/dev/null 2>&1); then
   exit 1
 fi
 
-# zsh with Antidote
-if (type zsh >/dev/null 2>&1); then
-  zsh setup-zsh.sh
+if ! (type zsh >/dev/null 2>&1); then
+  echo "zsh is required." >&2
+  exit 1
 fi
 
-# vim
-mkdir -pv "${HOME}/.vim/colors"
-ln -snf "${DOTFILES_DIR}/vimrc" "${HOME}/.vimrc"
+echo "Starting dotfiles setup..."
+echo ""
 
-# git
-if (type zsh >/dev/null 2>&1); then
-  zsh setup-git.sh
-fi
+# Phase 1: Core tools (order matters)
+echo "==> Phase 1: Setting up core tools"
+zsh setup/zsh.sh
+echo ""
+zsh setup/git.sh
+echo ""
 
-# editorconfig
-ln -snf "${DOTFILES_DIR}/editorconfig" "${HOME}/.editorconfig"
-
-# brew
-if (type brew >/dev/null 2>&1); then
-  case "${OSTYPE}" in
-  darwin*)
-    ln -snf "${DOTFILES_DIR}/Brewfile-macos" "${HOME}/.Brewfile"
-    ;;
-  *)
-    ln -snf "${DOTFILES_DIR}/Brewfile-linux" "${HOME}/.Brewfile"
-    ;;
+# Phase 2: Other tools (order doesn't matter)
+echo "==> Phase 2: Setting up other tools"
+for script in setup/*.sh; do
+  case "${script##*/}" in
+    zsh.sh|git.sh) continue ;;  # Already executed in Phase 1
+    *) zsh "$script"; echo "" ;;
   esac
-fi
+done
 
-# direnv
-ln -snf "${DOTFILES_DIR}/direnvrc" "${HOME}/.direnvrc"
+echo "==> All setup tasks complete!"
+echo ""
+echo "Dotfiles installation finished successfully."
