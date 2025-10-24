@@ -14,10 +14,10 @@
 
 ```bash
 # 1. dotfilesをクローン
-git clone https://github.com/hidekuro/dotfiles.git ~/dotfiles
+git clone https://github.com/hidekuro/dotfiles.git ~/.dotfiles
 
 # 2. インストールスクリプトを実行
-zsh ~/dotfiles/install.sh
+zsh ~/.dotfiles/install.sh
 ```
 
 インストールスクリプトは以下を実行します：

@@ -11,8 +11,7 @@ ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/docker
 
 # SSH Agent management
-# Note: Not needed in DevContainers/Codespaces as they forward the host's SSH agent
-$_comment_if_devcontainer ohmyzsh/ohmyzsh path:plugins/ssh-agent
+# Note: Loaded conditionally in zshrc (skipped in DevContainers/Codespaces)
 
 # Additional completions
 zsh-users/zsh-completions
