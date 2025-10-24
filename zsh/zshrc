@@ -203,7 +203,7 @@ fi
 
 # Load plugins from static file (faster startup)
 ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
-ANTIDOTE_PLUGIN_LIST="${ZDOTDIR:-$HOME}/.dotfiles/zsh/zsh_plugins.txt"
+ANTIDOTE_PLUGIN_LIST="${DOTFILES_DIR}/zsh/zsh_plugins.txt"
 
 # Generate static plugin file if needed
 if [[ ! -f "$ANTIDOTE_PLUGINS" || "$ANTIDOTE_PLUGIN_LIST" -nt "$ANTIDOTE_PLUGINS" ]]; then

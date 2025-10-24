@@ -24,10 +24,6 @@ else
   echo "  Antidote already installed"
 fi
 
-# Create symlink to dotfiles directory for plugin list access
-echo "  Creating dotfiles symlink..."
-ln -snf "${REPO_ROOT}" "${ZDOTDIR}/.dotfiles"
-
 # Link zsh configuration files
 echo "  Linking zsh configuration files..."
 for rcfile in "${REPO_ROOT}"/zsh/(zshenv|zprofile|zshrc|zlogin|zlogout)(.N); do

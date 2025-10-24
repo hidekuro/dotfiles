@@ -7,6 +7,13 @@ fi
 setopt no_global_rcs
 
 # ========================================
+# Dotfiles Directory
+# ========================================
+# Resolve the actual location of the dotfiles repository by following
+# the symlink from ~/.zshenv to its real path, then getting the parent directory
+export DOTFILES_DIR="${${(%):-%x}:A:h:h}"
+
+# ========================================
 # Homebrew Integration
 # ========================================
 # Initialize Homebrew early to make it available for all shell sessions
