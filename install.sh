@@ -1,6 +1,5 @@
 #!/bin/bash
-cd "$(dirname $0)" || exit 1
-DOTFILES_DIR=$(pwd)
+cd "$(dirname "$0")" || exit 1
 
 if ! (type git >/dev/null 2>&1); then
   echo "git is required." >&2
@@ -27,7 +26,7 @@ echo "==> Phase 2: Setting up other tools"
 for script in setup/*.sh; do
   case "${script##*/}" in
     zsh.sh|git.sh) continue ;;  # Already executed in Phase 1
-    *) zsh "$script"; echo "" ;;
+    *) zsh "${script}"; echo "" ;;
   esac
 done
 
