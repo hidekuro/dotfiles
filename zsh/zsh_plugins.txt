@@ -5,6 +5,8 @@
 sindresorhus/pure
 
 # Git utilities (Oh My Zsh plugin)
+# Load git lib functions first (provides git_current_branch, etc.)
+ohmyzsh/ohmyzsh path:lib/git.zsh
 ohmyzsh/ohmyzsh path:plugins/git
 
 # Docker completion and utilities
