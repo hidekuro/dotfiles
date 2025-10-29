@@ -60,6 +60,22 @@ bindkey '^[3;5~' delete-char             # Delete (some terminals)
 bindkey '^S' history-incremental-search-forward
 bindkey '^R' history-incremental-search-backward
 
+# Word navigation (Alt + arrow keys on Windows/Linux, Option + arrow keys on macOS)
+bindkey '^[^[[C' forward-word            # Alt/Option + Right Arrow
+bindkey '^[^[[D' backward-word           # Alt/Option + Left Arrow
+bindkey '^[[1;3C' forward-word           # Alt/Option + Right Arrow (alternative)
+bindkey '^[[1;3D' backward-word          # Alt/Option + Left Arrow (alternative)
+
+# Home/End keys
+bindkey '^[[H' beginning-of-line         # Home
+bindkey '^[[F' end-of-line               # End
+bindkey '^[[1~' beginning-of-line        # Home (alternative)
+bindkey '^[[4~' end-of-line              # End (alternative)
+
+# Delete word
+bindkey '^[^?' backward-delete-word      # Alt/Option + Delete (backward)
+bindkey '^[[3;3~' delete-word            # Alt/Option + Delete (forward)
+
 # ========================================
 # PATH Configuration
 # ========================================
