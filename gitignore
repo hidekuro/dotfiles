@@ -1,6 +1,6 @@
 # Convenient ignore directory
 ,/
-.ig/
+.i/
 
 # Claude
 **/.claude/settings.local.json
