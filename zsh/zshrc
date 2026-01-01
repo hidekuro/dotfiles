@@ -11,7 +11,7 @@ mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
 # Disable in DevContainers/Codespaces as they forward the host's SSH agent
 # Also disable if 1Password SSH Agent or Bitwarden SSH Agent is configured
 if [[ -z "$REMOTE_CONTAINERS" && -z "$CODESPACES" && \
-      ! "$SSH_AUTH_SOCK" =~ (1password|bitwarden) ]]; then
+     -n "$SSH_AUTH_SOCK" && ! "$SSH_AUTH_SOCK" =~ (1password|bitwarden) ]]; then
   enable_ssh_agent=true
 else
   enable_ssh_agent=false
