@@ -53,4 +53,16 @@ PR タイトル・PR 本文・コミットメッセージに「PR-1」「PR-2」
   - 制約や前提条件
   - TODO コメント
 
-@CLAUDE.local.md
+## Bash コマンド実行ルール
+
+- 実行先が現在の作業ディレクトリと同じ場合、コマンドの先頭に `cd <dir> &&` を付けない（`permissions.allow` のパターンマッチが壊れ、`ls` や `git log` でも許可プロンプトが毎回発生するため）
+- 別ディレクトリへ移動が必要な場合のみ `cd` を使い、絶対パスで記述する
+
+## AWS 操作ルール
+
+プロファイル名に `readonly` を含むもののみ AI が Bash で使用してよい。それ以外のプロファイルは、直接の AWS CLI コマンドだけでなく CDK (`cdk deploy`, `cdk diff` 等)・Terraform・SAM など内部でそのプロファイルを使うツールも含め、AI が Bash で実行してはならない。該当コマンドはユーザーに提示するだけにし、実行はユーザーが行う。
+
+- 状態確認・一覧取得（`aws ... list`, `describe`, `get` 等）は AI が Bash で直接実行してよい。その際は `readonly` プロファイルを使う
+- `AWS_PROFILE` 環境変数ではなく `--profile` オプション形式で提示する
+- `--profile` と `--region` はサブコマンド直後の最初のオプション位置に書く（例: `aws sts get-caller-identity --profile <readonly-profile> --region <region> --output json`）
+- 提示するコマンドの引数（リビジョン番号など）が文脈から予測できる場合は予測値で埋め、ユーザーが修正しやすい形にする
