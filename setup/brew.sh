@@ -17,12 +17,12 @@ echo "Setting up Homebrew configuration..."
 
 case "${OSTYPE}" in
 darwin*)
-  ln -snf "${REPO_ROOT}/Brewfile-macos" "${HOME}/.Brewfile"
-  echo "  Linked Brewfile-macos"
+  ln -snf "${REPO_ROOT}/Brewfile" "${HOME}/.Brewfile"
+  echo "  Linked Brewfile"
   ;;
 *)
-  ln -snf "${REPO_ROOT}/Brewfile-linux" "${HOME}/.Brewfile"
-  echo "  Linked Brewfile-linux"
+  ln -snf "${REPO_ROOT}/Brewfile.linux" "${HOME}/.Brewfile"
+  echo "  Linked Brewfile.linux"
   ;;
 esac
 
