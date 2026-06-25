@@ -7,7 +7,7 @@ tap "itchyny/tap", trusted: true
 tap "kayac/tap", trusted: true
 tap "lucagrulla/tap", trusted: true
 tap "mackerelio/mackerel-agent", trusted: true
-tap "oktadeveloper/tap", trusted: true
+tap "oktadev/tap", "https://github.com/oktadev/homebrew-tap.git"
 tap "songmu/tap", trusted: true
 brew "ansifilter"
 brew "openssl@3"
@@ -86,6 +86,7 @@ brew "ruby", link: false
 brew "ruff"
 brew "shellcheck"
 brew "shfmt"
+brew "source-highlight"
 brew "sshuttle"
 brew "tflint"
 brew "tmux"
@@ -109,7 +110,7 @@ cask "gimp"
 cask "git-credential-manager"
 cask "karabiner-elements"
 cask "linearmouse"
-cask "oktadeveloper/tap/okta"
+cask "okta"
 cask "session-manager-plugin"
 cask "visual-studio-code"
 cask "wireshark-app"
