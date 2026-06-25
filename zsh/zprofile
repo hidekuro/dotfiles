@@ -11,6 +11,11 @@ export EDITOR='vi'
 export VISUAL='vi'
 export LESS='-g -i -M -R -S -z-4'
 
+# source-highlight による less の構文ハイライト。スクリプトがある環境でのみ有効化する
+if (( $+commands[src-hilite-lesspipe.sh] )); then
+  export LESSOPEN="| src-hilite-lesspipe.sh %s"
+fi
+
 # ========================================
 # SSH Agent Setup
 # ========================================
