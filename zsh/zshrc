@@ -279,6 +279,16 @@ _describe_alias() {
 compdef _describe_alias -command-
 
 # ========================================
+# Google Cloud SDK
+# ========================================
+
+# gcloud が配布するのは zsh の補完関数ファイルではなく bash 形式の補完定義なので、fpath に置いても読み込まれない
+# 読み込み時に bash 互換レイヤーの有効化を伴い、compinit 済みであることが前提になるため compinit より後に置く
+if [[ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc" ]]; then
+  source "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
+fi
+
+# ========================================
 # Platform-Specific Settings
 # ========================================
 
