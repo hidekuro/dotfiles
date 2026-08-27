@@ -28,6 +28,10 @@
 3. git 管理化のディレクトリの場合は `git diff` で差分を提示し、ユーザーの確認を求める
 4. 明示的な指示があるまで `git add` / `git commit` を実行しない
 
+### セルフレビューの実施
+
+セルフレビューを指示されたら `self-review` Skill を使用する。
+
 ### PR レビューの実施
 
 `pr-review-perform` Skill を参照する。
