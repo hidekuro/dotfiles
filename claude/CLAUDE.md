@@ -164,5 +164,6 @@ Perl・JS/TS・シェル・YAML/TOML などあらゆる言語・設定ファイ�
 
 - 状態確認・一覧取得 (`aws ... list`, `describe`, `get` 等) は AI が Bash で直接実行してよい。その際は `readonly` プロファイルを使う
 - `AWS_PROFILE` 環境変数ではなく `--profile` オプション形式で提示する
+- プロファイル名を推測で組み立てない。`aws configure list-profiles` の出力を省略せず全件確認し、実在するものを使う
 - `--profile` と `--region` はサブコマンド直後の最初のオプション位置に書く (例: `aws sts get-caller-identity --profile <readonly-profile> --region <region> --output json`)
 - 提示するコマンドの引数 (リビジョン番号など) が文脈から予測できる場合は予測値で埋め、ユーザーが修正しやすい形にする
