@@ -45,13 +45,18 @@ for hook_path in "${HOOKS_SRC}"/*(N.); do
 done
 
 # settings.json には業務用の permissions やマーケットプレイスも入るので、ファイルごとではなく hooks 節だけを dotfiles の内容で置き換える
+# settings.json だけに足した hook も消えるので、置き換える前に差分を表示し、元のファイルを settings.json.bak に残す
 SETTINGS="${CLAUDE_DIR}/settings.json"
+SETTINGS_HOOKS="${REPO_ROOT}/claude/settings-hooks.json"
 
 if (( $+commands[jq] )); then
   [[ -f "${SETTINGS}" ]] || echo '{}' > "${SETTINGS}"
-  jq --slurpfile src "${REPO_ROOT}/claude/settings-hooks.json" '.hooks = $src[0].hooks' "${SETTINGS}" > "${SETTINGS}.tmp"
-  mv "${SETTINGS}.tmp" "${SETTINGS}"
-  echo "  Replaced hooks in ~/.claude/settings.json"
+  if ! diff -u <(jq -S '.hooks' "${SETTINGS}") <(jq -S '.hooks' "${SETTINGS_HOOKS}"); then
+    cp "${SETTINGS}" "${SETTINGS}.bak"
+    jq --slurpfile src "${SETTINGS_HOOKS}" '.hooks = $src[0].hooks' "${SETTINGS}" > "${SETTINGS}.tmp"
+    mv "${SETTINGS}.tmp" "${SETTINGS}"
+    echo "  Replaced hooks in ~/.claude/settings.json (previous file: ~/.claude/settings.json.bak)"
+  fi
 else
   echo "  jq not found; skipped registering hooks in ~/.claude/settings.json"
 fi
