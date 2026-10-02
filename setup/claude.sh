@@ -32,7 +32,7 @@ for skill_path in "${SKILLS_SRC}"/*(N/); do
   echo "  Copied skill: ${skill_name}"
 done
 
-# Copy hooks per file. settings.json は dotfiles 管理外なので、hook の登録 (settings.json の hooks 節) は手動
+# Copy hooks per file
 HOOKS_SRC="${REPO_ROOT}/claude/hooks"
 HOOKS_DEST="${CLAUDE_DIR}/hooks"
 
@@ -43,6 +43,18 @@ for hook_path in "${HOOKS_SRC}"/*(N.); do
   chmod +x "${HOOKS_DEST}/${hook_path:t}"
   echo "  Copied hook: ${hook_path:t}"
 done
+
+# settings.json には業務用の permissions やマーケットプレイスも入るので、ファイルごとではなく hooks 節だけを dotfiles の内容で置き換える
+SETTINGS="${CLAUDE_DIR}/settings.json"
+
+if (( $+commands[jq] )); then
+  [[ -f "${SETTINGS}" ]] || echo '{}' > "${SETTINGS}"
+  jq --slurpfile src "${REPO_ROOT}/claude/settings-hooks.json" '.hooks = $src[0].hooks' "${SETTINGS}" > "${SETTINGS}.tmp"
+  mv "${SETTINGS}.tmp" "${SETTINGS}"
+  echo "  Replaced hooks in ~/.claude/settings.json"
+else
+  echo "  jq not found; skipped registering hooks in ~/.claude/settings.json"
+fi
 
 # textlint は hooks から呼ぶ。node_modules をリポジトリに置かないため、~/.claude/textlint に npm でインストールする
 TEXTLINT_SRC="${REPO_ROOT}/claude/textlint"
