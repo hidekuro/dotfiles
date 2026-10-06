@@ -39,7 +39,7 @@
 
 ### PR レビューの実施
 
-`pr-review-perform` Skill を参照する。
+`review-pr` Skill を参照する。
 
 ### PR レビューコメントへの対応
 
