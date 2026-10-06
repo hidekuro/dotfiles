@@ -43,7 +43,7 @@
 
 ### PR レビューコメントへの対応
 
-`pr-review-respond` Skill を使用する。
+`handle-review-comments` Skill を使用する。
 
 ## コードの書き方
 
