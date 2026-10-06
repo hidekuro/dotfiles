@@ -17,19 +17,25 @@ mkdir -p "${CLAUDE_DIR}"
 ln -snf "${REPO_ROOT}/claude/CLAUDE.md" "${CLAUDE_DIR}/CLAUDE.md"
 echo "  Linked ~/.claude/CLAUDE.md"
 
-# Copy each skill directory (replace per-skill if exists)
-# マシン固有のスキルを残したまま dotfiles 側のスキルだけ更新できるよう、
-# skills/ ディレクトリ全体ではなくスキル単位で置き換える
+# Link each skill directory (replace per-skill if exists)
+# マシン固有のスキルを残すため、skills/ ディレクトリ全体ではなくスキル単位でリンクする
 SKILLS_SRC="${REPO_ROOT}/claude/skills"
 SKILLS_DEST="${CLAUDE_DIR}/skills"
 
 mkdir -p "${SKILLS_DEST}"
 
+# 改名・削除したスキルが起動候補に残らないよう、dotfiles を指したままリンク先が無くなったリンクを消す
+for link_path in "${SKILLS_DEST}"/*(N@); do
+  if [[ "$(readlink "${link_path}")" == "${SKILLS_SRC}/"* && ! -e "${link_path}" ]]; then
+    rm "${link_path}"
+  fi
+done
+
 for skill_path in "${SKILLS_SRC}"/*(N/); do
   skill_name="${skill_path:t}"
   rm -rf "${SKILLS_DEST}/${skill_name}"
-  cp -R "${skill_path}" "${SKILLS_DEST}/${skill_name}"
-  echo "  Copied skill: ${skill_name}"
+  ln -s "${skill_path}" "${SKILLS_DEST}/${skill_name}"
+  echo "  Linked skill: ${skill_name}"
 done
 
 # Copy hooks per file
