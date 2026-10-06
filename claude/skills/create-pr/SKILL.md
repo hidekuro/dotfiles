@@ -22,23 +22,20 @@ PR 本文の読者はコードレビュアーです。レビュアーはすで�
 
 ## フェーズ 1: 情報収集
 
-以下を **並列**で取得します。
+以下を 1 行ずつ単独のコマンドとして **並列**で実行します。`@{upstream}` が失敗したら upstream なしと判断します。
 
 ```bash
-# ブランチ・状態の確認
 git branch --show-current
 git status --short
-git rev-parse --abbrev-ref @{upstream} 2>/dev/null || echo "(no upstream)"
+git rev-parse --abbrev-ref @{upstream}
 gh repo view --json defaultBranchRef -q .defaultBranchRef.name
 ```
 
+続いて、取得したベースブランチ名とカレントブランチ名をリテラルで埋めて差分を取得します。
+
 ```bash
-# 差分の取得 (まずサマリーから)
-BASE=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
-CURRENT=$(git branch --show-current)
-git diff --stat ${BASE}...${CURRENT}
-git log ${BASE}..${CURRENT} --oneline --decorate
-git log ${BASE}..${CURRENT} --pretty=format:"%H%n%s%n%b%n---" --reverse
+git diff --stat <base>...<current>
+git log <base>..<current> --pretty=format:"%H%n%s%n%b%n---" --reverse
 ```
 
 **前提チェック (いずれかに該当する場合は中止):**
@@ -55,7 +52,7 @@ git log ${BASE}..${CURRENT} --pretty=format:"%H%n%s%n%b%n---" --reverse
 
 ## フェーズ 2: リポジトリ規約の確認
 
-**PR テンプレートを探す** (Glob ツールで以下を順にチェック):
+**PR テンプレートを探す** (以下を順に確認):
 
 1. `.github/pull_request_template.md`
 2. `.github/PULL_REQUEST_TEMPLATE.md`
@@ -242,16 +239,10 @@ git push -u origin <current-branch>
 
 ### 2. PR 作成
 
+本文を Write ツールでスクラッチパッドのファイルに書き出してから、そのファイルを渡して作成します。
+
 ```bash
-gh pr create \
-  --title "<タイトル>" \
-  --body "$(cat <<'PRBODY'
-<本文>
-PRBODY
-)" \
-  --base <base-branch> \
-  --assignee @me \
-  --draft
+gh pr create --title "<タイトル>" --body-file <本文ファイルの絶対パス> --base <base-branch> --assignee @me --draft
 ```
 
 **オプションの使い分け:**
@@ -288,7 +279,6 @@ https://github.com/...
 ## 制約事項
 
 - **PR 作成後の自動操作は行わない**: マージ・レビュアー割り当て等は明示的な指示があった場合のみ
-- **TodoWrite や Agent ツールは使用しない**: Bash, Read, Glob, Grep のみを使用する
 - **並列実行を活用する**: 独立した情報取得は並列で実行して効率化する
 - **リポジトリ規約を優先する**: PR テンプレートや CONTRIBUTING.md の指定は必ず従う
 - **人間が清書した本文に削られた内容の復活を提案しない**: AI の下書きは清書の材料であり、削ることはレビュアーへの配慮による意図的な判断
