@@ -290,12 +290,6 @@ setopt auto_pushd
 setopt pushd_ignore_dups
 setopt rm_star_silent
 
-setopt no_extended_glob
-setopt clobber
-setopt no_auto_cd
-setopt no_correct
-setopt no_correct_all
-
 # ========================================
 # ターミナルのタイトル
 # ========================================
