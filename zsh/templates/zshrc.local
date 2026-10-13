@@ -59,11 +59,6 @@ alias la="${aliases[ls]:-ls} -lAh"
 #   eval "$(direnv hook zsh)"
 # fi
 
-# Example: SDKMAN (Java/JVM tool manager)
-# if [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
-#   source "$HOME/.sdkman/bin/sdkman-init.sh"
-# fi
-
 # Example: 1Password CLI plugins
 # if [[ -s "$HOME/.config/op/plugins.sh" ]]; then
 #   source "$HOME/.config/op/plugins.sh"
