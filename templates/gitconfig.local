@@ -1,7 +1,8 @@
 # ~/.gitconfig.local
 #
-# This file is included by the main .gitconfig.
-# Use it for machine-specific Git settings.
+# This file is included at the end of the shared config (~/.config/git/config).
+# Use it for hand-written machine-specific Git settings.
+# Settings written by `git config --global` go to ~/.gitconfig, which takes precedence over this file.
 # The settings below are examples. Uncomment and edit them as needed.
 
 # --- Credential Helper ---

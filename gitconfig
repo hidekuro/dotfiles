@@ -23,3 +23,8 @@
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
+[gpg]
+    format = ssh
+# 上の共有設定をマシン固有の値で上書きできるよう、末尾で読み込む
+[include]
+    path = ~/.gitconfig.local
