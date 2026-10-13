@@ -72,10 +72,18 @@ TEXTLINT_SRC="${REPO_ROOT}/claude/textlint"
 TEXTLINT_DEST="${CLAUDE_DIR}/textlint"
 
 mkdir -p "${TEXTLINT_DEST}"
-cp "${TEXTLINT_SRC}/package.json" "${TEXTLINT_SRC}/package-lock.json" "${TEXTLINT_SRC}/.textlintrc.json" "${TEXTLINT_DEST}/"
+cp "${TEXTLINT_SRC}/package.json" "${TEXTLINT_SRC}/.textlintrc.json" "${TEXTLINT_DEST}/"
 
-if (( $+commands[npm] )); then
-  (cd "${TEXTLINT_DEST}" && npm ci --silent --no-audit --no-fund)
+# npm ci は node_modules を消して取り直すので、dot pull のたびに待たされないよう lock が変わったときだけ実行する
+if cmp -s "${TEXTLINT_SRC}/package-lock.json" "${TEXTLINT_DEST}/package-lock.json"; then
+  echo "  textlint in ~/.claude/textlint is up to date"
+elif (( $+commands[npm] )); then
+  cp "${TEXTLINT_SRC}/package-lock.json" "${TEXTLINT_DEST}/"
+  # 途中で失敗したときに次の実行でやり直すよう、lock を消して変更ありの扱いに戻す
+  if ! (cd "${TEXTLINT_DEST}" && npm ci --silent --no-audit --no-fund); then
+    rm "${TEXTLINT_DEST}/package-lock.json"
+    exit 1
+  fi
   echo "  Installed textlint into ~/.claude/textlint"
 else
   echo "  npm not found; skipped textlint install (textlint hooks do nothing until installed)"
