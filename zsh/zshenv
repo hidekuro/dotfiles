@@ -1,36 +1,31 @@
-# system-wide environment settings for zsh if on macOS
+# 直後の no_global_rcs で /etc/zprofile を読まなくなるので、macOS が /etc/zprofile で行っている PATH の初期化をここで代わりに行う
 if [[ "$OSTYPE" == darwin* && -x /usr/libexec/path_helper ]]; then
   eval `/usr/libexec/path_helper -s`
 fi
 
-# Ignore global rcfiles.
 setopt no_global_rcs
 
 # ========================================
-# Dotfiles Directory
+# dotfiles の場所
 # ========================================
-# Resolve the actual location of the dotfiles repository by following
-# the symlink from ~/.zshenv to its real path, then getting the parent directory
+# ~/.zshenv はリポジトリの zsh/zshenv へのリンクなので、リンクをたどった実体の 2 つ上の階層をリポジトリの場所とする
 export DOTFILES_DIR="${${(%):-%x}:A:h:h}"
 
 # ========================================
-# Homebrew Integration
+# Homebrew
 # ========================================
-# Initialize Homebrew early to make it available for all shell sessions
-# This follows Homebrew's official recommendation for zsh
-# Supports: macOS (Apple Silicon & Intel), Linux/WSL (Linuxbrew)
+# スクリプトを含むすべての zsh で Homebrew のコマンドを使えるよう、zshenv で初期化する
 if [[ -x /opt/homebrew/bin/brew ]]; then
-  # macOS Apple Silicon
+  # macOS (Apple Silicon)
   eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -x /usr/local/bin/brew ]]; then
-  # macOS Intel
+  # macOS (Intel)
   eval "$(/usr/local/bin/brew shellenv)"
 elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  # Linux/WSL (Linuxbrew)
+  # Linux・WSL
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# Load machine-local zshenv if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zshenv.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshenv.local"
 fi

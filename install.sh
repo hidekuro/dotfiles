@@ -14,18 +14,18 @@ fi
 echo "Starting dotfiles setup..."
 echo ""
 
-# Phase 1: Core tools (order matters)
+# zsh と git の設定は、ほかの設定より先に行う
 echo "==> Phase 1: Setting up core tools"
 zsh setup/zsh.sh
 echo ""
 zsh setup/git.sh
 echo ""
 
-# Phase 2: Other tools (order doesn't matter)
+# 残りの設定は互いに依存しないので、順序を気にせず setup/ に追加してよい
 echo "==> Phase 2: Setting up other tools"
 for script in setup/*.sh; do
   case "${script##*/}" in
-    zsh.sh|git.sh) continue ;;  # Already executed in Phase 1
+    zsh.sh|git.sh) continue ;;  # 先に実行済み
     *) zsh "${script}"; echo "" ;;
   esac
 done

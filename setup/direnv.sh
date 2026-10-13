@@ -1,10 +1,7 @@
 #!/bin/zsh
-# direnv Setup Script
-# Sets up direnv configuration
 
 set -e
 
-# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
 REPO_ROOT=$(pwd)
 

@@ -1,4 +1,4 @@
-" General
+" 全般
 let mapleader = ","
 set nobackup
 set hidden
@@ -6,7 +6,7 @@ set modelines=0
 set ttyfast
 set mouse-=a
 
-" Edit
+" 編集
 set encoding=utf-8
 set shiftwidth=4
 set whichwrap=b,s,h,l,<,>,[,]
@@ -14,13 +14,13 @@ set backspace=indent,eol,start
 set autoread
 set noswapfile
 
-" Search
+" 検索
 set wrapscan
 set ignorecase
 set smartcase
 set hlsearch
 
-" Appearance
+" 表示
 set number
 set nolist
 set tabstop=4

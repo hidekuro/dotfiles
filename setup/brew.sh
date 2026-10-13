@@ -1,10 +1,7 @@
 #!/bin/zsh
-# Homebrew Setup Script
-# Sets up Homebrew Brewfile symlink
 
 set -e
 
-# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
 REPO_ROOT=$(pwd)
 

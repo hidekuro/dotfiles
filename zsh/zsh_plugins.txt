@@ -1,29 +1,25 @@
-# Antidote Plugin List
-# This file defines the zsh plugins to be loaded by Antidote
-
-# Prompt (Pure theme - same as Prezto)
+# プロンプト
 sindresorhus/pure
 
-# Git utilities (Oh My Zsh plugin)
-# Load git lib functions first (provides git_current_branch, etc.)
+# git の補完とエイリアス
+# plugins/git が使う関数 (git_current_branch など) を定義しているので、plugins/git より前に読み込む
 ohmyzsh/ohmyzsh path:lib/git.zsh
 ohmyzsh/ohmyzsh path:plugins/git
 
-# Docker completion and utilities
+# Docker の補完とエイリアス
 ohmyzsh/ohmyzsh path:plugins/docker
 ohmyzsh/ohmyzsh path:plugins/docker-compose
 
-# SSH Agent management (needs_ssh_agent is defined in zshrc)
+# ssh-agent (読み込むかどうかは zshrc で定義した needs_ssh_agent で判定する)
 ohmyzsh/ohmyzsh path:plugins/ssh-agent conditional:needs_ssh_agent
 
-# Additional completions
+# 補完の追加
 zsh-users/zsh-completions
 
-# Syntax highlighting (must be loaded near the end)
+# 入力中のコマンドの色分け
+# 後から定義されたウィジェットには色分けが効かないので、ほかのプラグインより後に読み込む
 zsh-users/zsh-syntax-highlighting
 
-# Command suggestions from history
-# zsh-users/zsh-autosuggestions
-
-# History substring search (arrow keys)
+# 上下キーで、入力中の文字列を含む履歴を検索する
+# 読み込んだ時点で zsh-syntax-highlighting が無いと代わりの簡易な色付け処理を入れてしまうので、zsh-syntax-highlighting より後に読み込む
 zsh-users/zsh-history-substring-search

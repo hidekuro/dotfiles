@@ -1,10 +1,7 @@
 #!/bin/zsh
-# Vim Setup Script
-# Sets up vim configuration
 
 set -e
 
-# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
 REPO_ROOT=$(pwd)
 

@@ -3,7 +3,7 @@
 
 setup/claude.sh は settings.json の hooks を dotfiles の内容で丸ごと置き換えるので、/hooks 画面などで settings.json だけを編集すると次の setup で消える。
 ずれた時点で気づけるよう起動のたびに比較し、AI ではなくユーザーに見える systemMessage で知らせる。
-dotfiles が ~/.dotfiles に clone されている前提。どちらかのファイルが読めなければ何もしない。
+dotfiles が ~/.dotfiles に clone されている前提で、どちらかのファイルが読めなければ何もしない。
 """
 import json
 import os

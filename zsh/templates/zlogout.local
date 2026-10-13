@@ -1,7 +1,7 @@
 # ~/.zlogout.local
 #
-# This file is loaded when a login shell exits.
-# Use it for cleanup tasks.
+# ログインシェルの終了時に読み込まれる。
+# 後片付けの処理を書く。
 #
-# Example:
+# 例:
 # echo "Bye!"

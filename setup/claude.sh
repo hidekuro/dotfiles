@@ -1,10 +1,7 @@
 #!/bin/zsh
-# Claude Code Setup Script
-# Sets up ~/.claude configuration files (CLAUDE.md, skills/, hooks/, textlint/)
 
 set -e
 
-# Always run from repository root
 cd "$(dirname "$0")/.." || exit 1
 REPO_ROOT=$(pwd)
 CLAUDE_DIR="${HOME}/.claude"
@@ -13,11 +10,9 @@ echo "Setting up Claude Code configuration..."
 
 mkdir -p "${CLAUDE_DIR}"
 
-# Link CLAUDE.md
 ln -snf "${REPO_ROOT}/claude/CLAUDE.md" "${CLAUDE_DIR}/CLAUDE.md"
 echo "  Linked ~/.claude/CLAUDE.md"
 
-# Link each skill directory (replace per-skill if exists)
 # マシン固有のスキルを残すため、skills/ ディレクトリ全体ではなくスキル単位でリンクする
 SKILLS_SRC="${REPO_ROOT}/claude/skills"
 SKILLS_DEST="${CLAUDE_DIR}/skills"
@@ -38,7 +33,6 @@ for skill_path in "${SKILLS_SRC}"/*(N/); do
   echo "  Linked skill: ${skill_name}"
 done
 
-# Link hooks per file
 # マシン固有の hook を残すため、hooks/ ディレクトリ全体ではなくファイル単位でリンクする
 HOOKS_SRC="${REPO_ROOT}/claude/hooks"
 HOOKS_DEST="${CLAUDE_DIR}/hooks"
@@ -73,7 +67,7 @@ else
   echo "  jq not found; skipped registering hooks in ~/.claude/settings.json"
 fi
 
-# textlint は hooks から呼ぶ。node_modules をリポジトリに置かないため、~/.claude/textlint に npm でインストールする
+# hook から呼ぶ textlint は、node_modules をリポジトリに置かないよう ~/.claude/textlint に npm でインストールする
 TEXTLINT_SRC="${REPO_ROOT}/claude/textlint"
 TEXTLINT_DEST="${CLAUDE_DIR}/textlint"
 

@@ -1,16 +1,16 @@
 # ~/.gitconfig.local
 #
-# This file is included at the end of the shared config (~/.config/git/config).
-# Use it for hand-written machine-specific Git settings.
-# Settings written by `git config --global` go to ~/.gitconfig, which takes precedence over this file.
-# The settings below are examples. Uncomment and edit them as needed.
+# 共有の設定 (~/.config/git/config) の末尾で読み込まれる。
+# 手で書くマシン固有の git の設定を書く。
+# git config --global で書いた設定は ~/.gitconfig に入り、こちらより優先される。
+# 以下は記入例なので、必要なものだけコメントを外して書き換える。
 
-# --- Credential Helper ---
-# The path to credential helpers can vary depending on the OS or installation method (e.g., Homebrew).
+# --- 認証の helper ---
+# helper のパスは、OS やインストール方法 (Homebrew など) によって変わる。
 # [credential "https://github.com"]
 # 	helper = !/path/to/gh auth git-credential
 
-# --- GPG/SSH Signing Program ---
-# The path to a signing program like 1Password's is often machine-specific.
+# --- 署名に使うプログラム ---
+# 1Password の op-ssh-sign のような署名用プログラムのパスは、マシンごとに変わることが多い。
 # [gpg "ssh"]
 # 	program = /path/to/op-ssh-sign

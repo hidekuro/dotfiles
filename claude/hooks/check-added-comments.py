@@ -7,7 +7,8 @@
 - 実装計画の付番 (PR-1、フェーズ1 など)
 - フラグ名を主語にした説明 (`--foo` を使う)
 - 日本語コメントの文中改行、および 150 文字を超える 1 行
-Edit / Write / MultiEdit は tool_input から追加行を取る。Bash は heredoc や sed による編集を拾うため git diff HEAD から取る。
+追加された行は、Edit・Write・MultiEdit では tool_input から取る。
+Bash では heredoc や sed による編集も拾えるよう、git diff HEAD から取る。
 同じ行を繰り返し指摘しないよう、報告済みの行をセッション単位で一時ファイルに記録する。
 """
 import hashlib
@@ -90,7 +91,10 @@ def comment_body(line, prefixes):
 
 
 def find_issues(path, numbered_lines):
-    """numbered_lines: (行番号または None, 行文字列) のリスト。隣接判定のため元の並び順を保つ。"""
+    """コメント行のうち規則に反する疑いのあるものを、(パス, 行番号, 種類, 本文) のリストで返す。
+
+    numbered_lines は (行番号または None, 行の文字列) のリストで、前後の行がつながっているかを判定するので、元の並び順のまま渡す。
+    """
     prefixes = comment_prefixes(path)
     if not prefixes:
         return []
@@ -118,7 +122,10 @@ def find_issues(path, numbered_lines):
 
 
 def lines_from_tool_input(tool_name, tool_input):
-    """Edit / Write / MultiEdit の入力から (パス, 追加行) を組み立てる。行番号は分からないので None。"""
+    """Edit・Write・MultiEdit の入力から、(パス, 追加された行のリスト) のリストを返す。
+
+    ツールの入力からは行番号が分からないので、行番号はすべて None にする。
+    """
     path = tool_input.get("file_path", "")
     if not path:
         return []

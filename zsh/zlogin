@@ -1,11 +1,11 @@
 #!/bin/zsh
-# Executes commands at login post-zshrc.
 
-# Execute code that does not affect the current session in the background.
+# ログインを待たせないよう、現在のシェルに影響しない処理はバックグラウンドで行う
 {
-  # Compile the completion dump to increase startup speed.
+  # 補完の定義ファイルをコンパイルしておき、次回以降の compinit での読み込みを速くする
   zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
   if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
+    # 複数のシェルが同時に起動したときにコンパイルが重ならないよう、ディレクトリの作成をロックとして使う
     if command mkdir "${zcompdump}.zwc.lock" 2>/dev/null; then
       zcompile "$zcompdump"
       command rmdir  "${zcompdump}.zwc.lock" 2>/dev/null
@@ -13,16 +13,13 @@
   fi
 } &!
 
-# Execute code only if STDERR is bound to a TTY.
 if [[ -o INTERACTIVE && -t 2 ]]; then
-  # Print a random, hopefully interesting, adage.
   if (( $+commands[fortune] )); then
     fortune -s
     print
   fi
 fi >&2
 
-# Load machine-local zlogin if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zlogin.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zlogin.local"
 fi

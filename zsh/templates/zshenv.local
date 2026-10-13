@@ -1,7 +1,7 @@
 # ~/.zshenv.local
 #
-# This file is loaded by all shells (login, interactive, and non-interactive).
-# Use it for environment variables that should be available everywhere.
+# ログインシェル・対話シェル・スクリプトを問わず、すべての zsh で読み込まれる。
+# どこからでも使いたい環境変数を書く。
 #
-# Example:
+# 例:
 # export MY_SECRET_API_KEY="value"

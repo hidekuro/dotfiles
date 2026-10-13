@@ -1,12 +1,12 @@
-# Convenient ignore directory
+# 作業メモなどを置くための、無視するディレクトリ
 ,/
 .i/
 
-# Claude
+# Claude Code
 **/.claude/settings.local.json
 
-# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,direnv,windows
-# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,direnv,windows
+# ここから下は https://www.toptal.com/developers/gitignore/api/linux,macos,direnv,windows で生成した内容
+# 生成元の設定を変えるときは https://www.toptal.com/developers/gitignore?templates=linux,macos,direnv,windows を使う
 
 ### direnv ###
 .direnv
@@ -15,32 +15,32 @@
 ### Linux ###
 *~
 
-# temporary files which can be created if a process still has a handle open of a deleted file
+# 削除済みのファイルをまだ開いているプロセスがあるときにできる一時ファイル
 .fuse_hidden*
 
-# KDE directory preferences
+# KDE のディレクトリごとの表示設定
 .directory
 
-# Linux trash folder which might appear on any partition or disk
+# 各パーティションやディスクにできる Linux のゴミ箱
 .Trash-*
 
-# .nfs files are created when an open file is removed but is still being accessed
+# 開いたまま削除されたファイルに、まだアクセスが続いているときにできる .nfs ファイル
 .nfs*
 
 ### macOS ###
-# General
+# 全般
 .DS_Store
 .AppleDouble
 .LSOverride
 
-# Icon must end with two \r
+# Icon の後ろには \r を 2 つ付ける必要がある
 Icon
 
 
-# Thumbnails
+# サムネイル
 ._*
 
-# Files that might appear in the root of a volume
+# ボリュームのルートにできるファイル
 .DocumentRevisions-V100
 .fseventsd
 .Spotlight-V100
@@ -49,7 +49,7 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Directories potentially created on remote AFP share
+# リモートの AFP 共有にできるディレクトリ
 .AppleDB
 .AppleDesktop
 Network Trash Folder
@@ -57,33 +57,33 @@ Temporary Items
 .apdisk
 
 ### macOS Patch ###
-# iCloud generated files
+# iCloud が作るファイル
 *.icloud
 
 ### Windows ###
-# Windows thumbnail cache files
+# Windows のサムネイルのキャッシュ
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
 
-# Dump file
+# ダンプファイル
 *.stackdump
 
-# Folder config file
+# フォルダの設定ファイル
 [Dd]esktop.ini
 
-# Recycle Bin used on file shares
+# ファイル共有で使われるごみ箱
 $RECYCLE.BIN/
 
-# Windows Installer files
+# Windows のインストーラー
 *.cab
 *.msi
 *.msix
 *.msm
 *.msp
 
-# Windows shortcuts
+# Windows のショートカット
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/linux,macos,direnv,windows
+# ここまで https://www.toptal.com/developers/gitignore/api/linux,macos,direnv,windows で生成した内容

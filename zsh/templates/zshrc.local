@@ -1,41 +1,40 @@
 # ~/.zshrc.local
 #
-# This file is loaded at the end of zshrc for local customizations.
-# Use it for environment variables, aliases, and tool initializations.
-# Put path and fpath settings in ~/.zshrc.path instead.
+# 対話シェルで、zshrc の最後に読み込まれる。
+# 環境変数・エイリアス・ツールの初期化を書く。
+# path と fpath の設定は、compinit より前に読み込まれる ~/.zshrc.path に書く。
 #
-# IMPORTANT: Always check if commands exist before running them
-# to avoid "command not found" errors.
+# コマンドが入っていないマシンでエラーにならないよう、ツールを初期化する前に必ずコマンドの有無を確かめる。
 
 # ========================================
-# Environment Variables
+# 環境変数
 # ========================================
 
-# Example: Set default editor
+# 例: 既定のエディタ
 # export EDITOR="vim"
 
 # ========================================
-# Aliases
+# エイリアス
 # ========================================
 
-# Example: Colored grep
+# 例: grep の結果に色を付ける
 # alias grep="grep --color=auto"
 
 # ========================================
-# Tool Initializations
+# ツールの初期化
 # ========================================
 
-# Example: GitHub CLI
+# 例: GitHub CLI
 # if (( $+commands[gh] )); then
 #   eval "$(gh completion -s zsh)"
 # fi
 
-# Example: pipx (Python tool installer)
+# 例: pipx
 # if (( $+commands[pipx] )); then
 #   eval "$(register-python-argcomplete pipx)"
 # fi
 
-# Example: 1Password CLI plugins
+# 例: 1Password CLI のプラグイン
 # if [[ -s "$HOME/.config/op/plugins.sh" ]]; then
 #   source "$HOME/.config/op/plugins.sh"
 # fi

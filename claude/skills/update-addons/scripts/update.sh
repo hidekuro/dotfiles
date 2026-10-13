@@ -1,5 +1,4 @@
 #!/bin/bash
-# Claude Code のプラグインと、Skills CLI (npx skills) で入れたスキルをまとめて最新化する
 set -euo pipefail
 
 installed="${HOME}/.claude/plugins/installed_plugins.json"

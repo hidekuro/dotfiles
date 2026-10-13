@@ -1,26 +1,25 @@
 #!/bin/zsh
 # ========================================
-# Oh My Zsh Compatibility Variables
+# Oh My Zsh 互換の変数
 # ========================================
 
-# Set up cache directory for Oh My Zsh plugins
+# Oh My Zsh のプラグインは補完関数などを ZSH_CACHE_DIR に書き出すので、Oh My Zsh 本体を使わない代わりに置き場所を用意する
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
 mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
 
 # ========================================
-# Colors (set early for other modules)
+# 色
 # ========================================
 
-# GitHub Dark Dimmed theme compatible colors
+# ターミナルの GitHub Dark Dimmed テーマで見やすい色にしている
 export LSCOLORS='exfxcxdxcxegedabagacad'
 export LS_COLORS='di=38;5;117:ln=38;5;87:ex=38;5;78:or=38;5;203:*.tar=38;5;221:*.tgz=38;5;221:*.zip=38;5;221:*.gz=38;5;221:*.bz2=38;5;221:*.xz=38;5;221:*.7z=38;5;221:*.rar=38;5;221:*.jpg=38;5;219:*.jpeg=38;5;219:*.png=38;5;219:*.gif=38;5;219:*.svg=38;5;219:*.webp=38;5;219:*.mp4=38;5;183:*.mov=38;5;183:*.avi=38;5;183:*.mkv=38;5;183:*.webm=38;5;183:*.mp3=38;5;147:*.wav=38;5;147:*.flac=38;5;147:*.m4a=38;5;147:*.ogg=38;5;147:*~=38;5;242:*#=38;5;242:*.bak=38;5;242:*.tmp=38;5;242:*.log=38;5;242:*.swp=38;5;242'
 
-# Load colors module (suppress output)
 autoload -Uz colors
 colors 2>/dev/null
 
 # ========================================
-# History Configuration
+# 履歴
 # ========================================
 
 HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
@@ -38,42 +37,35 @@ setopt hist_no_store
 setopt share_history
 
 # ========================================
-# Editor and Key Bindings
+# キーバインド
 # ========================================
 
-# Emacs key bindings (same as Prezto config)
 bindkey -e
 
-# Standard key bindings (from Prezto editor module)
-bindkey '^[[3~' delete-char              # Delete
-bindkey '^[3;5~' delete-char             # Delete (some terminals)
+bindkey '^[[3~' delete-char              # Delete キー
+bindkey '^[3;5~' delete-char             # Delete キー (別の送り方をする端末)
 
-# History search bindings
 bindkey '^F' history-incremental-search-forward
 bindkey '^R' history-incremental-search-backward
 
-# Word navigation (Alt + arrow keys on Windows/Linux, Option + arrow keys on macOS)
-bindkey '^[^[[C' forward-word            # Alt/Option + Right Arrow
-bindkey '^[^[[D' backward-word           # Alt/Option + Left Arrow
-bindkey '^[[1;3C' forward-word           # Alt/Option + Right Arrow (alternative)
-bindkey '^[[1;3D' backward-word          # Alt/Option + Left Arrow (alternative)
+bindkey '^[^[[C' forward-word            # Option (Alt) + →
+bindkey '^[^[[D' backward-word           # Option (Alt) + ←
+bindkey '^[[1;3C' forward-word           # Option (Alt) + → (別の送り方をする端末)
+bindkey '^[[1;3D' backward-word          # Option (Alt) + ← (別の送り方をする端末)
 
-# Home/End keys
-bindkey '^[[H' beginning-of-line         # Home
-bindkey '^[[F' end-of-line               # End
-bindkey '^[[1~' beginning-of-line        # Home (alternative)
-bindkey '^[[4~' end-of-line              # End (alternative)
+bindkey '^[[H' beginning-of-line         # Home キー
+bindkey '^[[F' end-of-line               # End キー
+bindkey '^[[1~' beginning-of-line        # Home キー (別の送り方をする端末)
+bindkey '^[[4~' end-of-line              # End キー (別の送り方をする端末)
 
-# Delete word
-bindkey '^[^?' backward-delete-word      # Alt/Option + Delete (backward)
-bindkey '^[[3;3~' delete-word            # Alt/Option + Delete (forward)
+bindkey '^[^?' backward-delete-word      # Option (Alt) + Backspace (Mac の delete キー)
+bindkey '^[[3;3~' delete-word            # Option (Alt) + Delete キー
 
 # ========================================
-# PATH Configuration
+# PATH
 # ========================================
-# Note: Homebrew is initialized in ~/.zshenv for early availability
+# Homebrew 本体の PATH は、スクリプトからも使えるよう zshenv で設定している
 
-# Common paths (all platforms)
 path=(
   $HOME/.local/bin(N-/)
   $HOME/bin(N-/)
@@ -81,7 +73,7 @@ path=(
   $path
 )
 
-# Homebrew: Add GNU utilities (if Homebrew/Linuxbrew is installed)
+# macOS 標準の BSD 版ではなく、Homebrew で入れた GNU 版の getopt・sed・tar を優先して使う
 if [[ -n "$HOMEBREW_PREFIX" ]]; then
   path=(
     $HOMEBREW_PREFIX/opt/gnu-getopt/bin(N-/)
@@ -90,7 +82,6 @@ if [[ -n "$HOMEBREW_PREFIX" ]]; then
     $path
   )
 
-  # Add Homebrew/Linuxbrew completion paths to fpath
   fpath=(
     $HOMEBREW_PREFIX/share/zsh/site-functions(N-/)
     $fpath
@@ -98,7 +89,7 @@ if [[ -n "$HOMEBREW_PREFIX" ]]; then
 fi
 
 # ========================================
-# asdf-vm Integration
+# asdf
 # ========================================
 
 # asdf 0.16 以降は読み込むシェル統合のスクリプトが無く、shims と補完のディレクトリを通すだけで動く
@@ -114,29 +105,24 @@ if (( $+commands[asdf] )); then
 fi
 
 # ========================================
-# Completion System Setup (BEFORE plugins)
+# 補完
 # ========================================
 
 setopt auto_menu
 
-# Add completion directories to fpath
-# Note: Homebrew completions are added above when HOMEBREW_PREFIX is set
 fpath=(
-  $ZSH_CACHE_DIR/completions(N-/)         # Oh My Zsh plugin completions
-  ${ZDOTDIR:-$HOME}/.zsh/completions(N-/) # User custom completions (gh, op, poetry)
+  $ZSH_CACHE_DIR/completions(N-/)         # Oh My Zsh のプラグインが書き出す補完関数
+  ${ZDOTDIR:-$HOME}/.zsh/completions(N-/) # 手で置いた補完関数
   $fpath
 )
 
-# Platform-specific completion paths
 case $OSTYPE in
   darwin*)
-    # macOS: System-wide completions
     fpath+=(
       /usr/share/zsh/site-functions(N-/)
     )
     ;;
   linux*)
-    # Linux/WSL: Common completion directories
     fpath+=(
       /usr/share/zsh/site-functions(N-/)
       /usr/share/zsh/vendor-completions(N-/)
@@ -157,27 +143,27 @@ zstyle ':completion:*:sudo:*' command-path \
   /bin \
   /usr/X11R6/bin
 
-# Show descriptions in completions
+# 補完候補を種類ごとに見出しを付けてまとめ、説明も表示する
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*:descriptions' format '%B%d%b'
 zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:warnings' format 'No matches for: %d'
 zstyle ':completion:*' group-name ''
 
-# Enable completion menu and description display
+# 補完候補をメニューから矢印キーで選べるようにする
 zstyle ':completion:*' menu select
 zstyle ':completion:*' format '%d'
 zstyle ':completion:*' list-separator ' -- '
 
-# Show alias definitions in completion descriptions
+# コマンド名の補完では、エイリアス・組み込みコマンド・関数・外部コマンドの順に並べる
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
 
-# Load machine-local path/fpath settings before compinit so that added completion directories are picked up
+# 足した補完関数のディレクトリが compinit に反映されるよう、マシン固有の path・fpath の設定は compinit より前に読み込む
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.path" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.path"
 fi
 
-# Initialize completion system BEFORE loading plugins
+# プラグインが読み込み時に compdef を呼ぶので、プラグインより前に補完を初期化する
 autoload -Uz compinit
 
 local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
@@ -185,27 +171,24 @@ local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
 local -a zcd_stale=( ${zcd_file}(N.mh+24) )
 
 if [[ ! -f "$zcd_file" || -n "$zcd_stale" ]]; then
-  # Regenerate .zcompdump if it's more than a day old.
   compinit
   # compinit は補完関数の数が変わったときしか .zcompdump を書き直さず、古いと判定され続けるので更新時刻を進める
   touch "$zcd_file"
 else
-  # Otherwise, initialize with the cache for faster startup.
+  # 定義ファイルが新しいうちは、補完関数の確認を省いて起動を速くする
   compinit -C
 fi
 
 # ========================================
-# Antidote Plugin Manager Setup
+# プラグイン (Antidote)
 # ========================================
 
-# Install Antidote if not present
 ANTIDOTE_HOME="${ZDOTDIR:-$HOME}/.antidote"
 if [[ ! -d "$ANTIDOTE_HOME" ]]; then
   echo "Installing Antidote..."
   git clone --depth=1 https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
 fi
 
-# Source Antidote
 source "$ANTIDOTE_HOME/antidote.zsh"
 
 # launchd・1Password・devcontainer の転送などで agent が用意済みなら、別の agent を起動しない
@@ -217,11 +200,10 @@ needs_ssh_agent() {
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
 
-# Load plugins from static file (faster startup)
+# 起動のたびにプラグインの一覧を antidote に解釈させると遅いので、一覧が変わったときだけ読み込み用のスクリプトを作り直して、それを読む
 ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
 ANTIDOTE_PLUGIN_LIST="${DOTFILES_DIR}/zsh/zsh_plugins.txt"
 
-# Generate static plugin file if needed
 if [[ ! -f "$ANTIDOTE_PLUGINS" || "$ANTIDOTE_PLUGIN_LIST" -nt "$ANTIDOTE_PLUGINS" ]]; then
   antidote bundle <"$ANTIDOTE_PLUGIN_LIST" >|"$ANTIDOTE_PLUGINS"
 fi
@@ -229,27 +211,24 @@ fi
 source "$ANTIDOTE_PLUGINS"
 
 # ========================================
-# Plugin-Specific Configuration
+# プラグインの設定
 # ========================================
 
-# History substring search key bindings (after plugin load)
-# Note: Must be set AFTER zsh-history-substring-search plugin is loaded
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+# zsh-history-substring-search が定義するウィジェットを使うので、プラグインの読み込みより後に置く
+bindkey '^[[A' history-substring-search-up    # ↑
+bindkey '^[[B' history-substring-search-down  # ↓
 
-# Custom function to show alias definitions alongside normal command completions
+# コマンド名の補完で、エイリアスには定義の内容を説明として添えて表示する
 _describe_alias() {
   local -a aliases_with_desc
   local ret=1
 
-  # Get all aliases and format them with their definitions
   local alias_name alias_def
   for alias_name in "${(@k)aliases}"; do
     alias_def="${aliases[$alias_name]}"
     aliases_with_desc+=("${alias_name}:${alias_def}")
   done
 
-  # Show aliases with descriptions, then let default completion handle the rest
   _describe -t aliases 'alias' aliases_with_desc && ret=0
   _command_names -e && ret=0
   compadd -k builtins && ret=0
@@ -258,7 +237,6 @@ _describe_alias() {
   return ret
 }
 
-# Register the custom completion function for command position
 compdef _describe_alias -command-
 
 # ========================================
@@ -280,7 +258,7 @@ if (( $+commands[direnv] )); then
 fi
 
 # ========================================
-# Platform-Specific Settings
+# OS ごとの設定
 # ========================================
 
 case $OSTYPE in
@@ -301,7 +279,7 @@ alias ll="${aliases[ls]:-ls} -lh"
 alias la="${aliases[ls]:-ls} -lAh"
 
 # ========================================
-# Misc Options
+# その他のオプション
 # ========================================
 
 setopt print_eight_bit
@@ -312,7 +290,6 @@ setopt auto_pushd
 setopt pushd_ignore_dups
 setopt rm_star_silent
 
-# Fix annoying settings
 setopt no_extended_glob
 setopt clobber
 setopt no_auto_cd
@@ -320,22 +297,21 @@ setopt no_correct
 setopt no_correct_all
 
 # ========================================
-# Terminal Title
+# ターミナルのタイトル
 # ========================================
 
-# Auto set terminal title (matches Prezto terminal module behavior)
-# Note: Pure prompt handles terminal title, so we only set this if Pure is not loaded
+# Pure を読み込んでいるときは Pure がタイトルを設定するので、ここでは設定しない
 if ! typeset -f prompt_pure_precmd &>/dev/null; then
   chpwd() {
-    print -Pn "\e]2;%n@%m: %~\a"  # Window title
-    print -Pn "\e]1;%m: %~\a"     # Tab title
+    print -Pn "\e]2;%n@%m: %~\a"  # ウィンドウのタイトル
+    print -Pn "\e]1;%m: %~\a"     # タブのタイトル
   }
-  # Set title on initial load
+  # chpwd はディレクトリを移動したときにしか呼ばれないので、起動時にも一度呼ぶ
   chpwd
 fi
 
 # ========================================
-# Aliases and Functions
+# エイリアスと関数
 # ========================================
 
 function gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}
@@ -344,10 +320,9 @@ alias gpf='git push --force-if-includes'
 alias sa='alias | grep'
 
 # ========================================
-# Load Local Configuration
+# マシン固有の設定
 # ========================================
 
-# Load local customizations (PATH, environment variables, tool initializations)
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
 fi

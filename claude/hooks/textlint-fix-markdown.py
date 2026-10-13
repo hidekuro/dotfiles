@@ -2,8 +2,8 @@
 """Markdown を編集した直後に textlint --fix を当て、日本語と英数字の間のスペースを規則に揃える PostToolUse フック。
 
 モデルに毎回スペース規則を意識させるより、ツールで機械的に直す方が確実で安い。
-修正が入ったときだけ additionalContext で知らせる。Edit ツールは読み込み後にファイルが変わっていると失敗するので、再読込を促すため。
-textlint は ~/.claude/textlint に npm でインストールされている前提 (setup/claude.sh が用意する)。無ければ何もしない。
+Edit ツールは読み込んだ後にファイルが変わっていると失敗するので、修正が入ったときだけ additionalContext で知らせて読み直しを促す。
+textlint は setup/claude.sh が ~/.claude/textlint に入れる前提で、入っていなければ何もしない。
 """
 import glob
 import json
@@ -18,7 +18,10 @@ TARGET_EXT = (".md", ".markdown")
 
 
 def env_with_node():
-    """hook は非ログインシェルで動くことがあり、asdf の shim も asdf 本体が PATH に無いと動かないので、node の実体ディレクトリを直接足す。"""
+    """textlint を動かすための、node のディレクトリを PATH の先頭に足した環境変数を返す。
+
+    hook は PATH が設定されていない非ログインシェルで動くことがあり、asdf の shim も asdf 本体が PATH に無いと動かないので、node の実体のディレクトリを直接足す。
+    """
     env = os.environ.copy()
     extra = sorted(glob.glob(os.path.expanduser("~/.asdf/installs/nodejs/*/bin")), reverse=True)
     extra += [os.path.expanduser("~/.asdf/shims"), "/opt/homebrew/bin", "/usr/local/bin"]

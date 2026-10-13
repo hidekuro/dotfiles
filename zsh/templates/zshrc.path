@@ -1,16 +1,16 @@
 # ~/.zshrc.path
 #
-# This file is loaded by zshrc just before compinit.
-# Use it only for machine-specific path and fpath settings,
-# so that added completion directories are picked up by compinit.
+# 対話シェルで、zshrc の compinit の直前に読み込まれる。
+# マシン固有の path と fpath の設定だけを書く。
+# ここで fpath に足した補完関数のディレクトリは、compinit に反映される。
 
-# Example: Add custom binary directories
+# 例: コマンドのディレクトリを足す
 # path=(
 #   /opt/my-custom-tool/bin
 #   $path
 # )
 
-# Example: Add custom completion directories
+# 例: 補完関数のディレクトリを足す
 # fpath=(
 #   $HOME/.my-completions
 #   $fpath

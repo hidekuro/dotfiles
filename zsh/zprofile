@@ -1,6 +1,6 @@
 #!/bin/zsh
 # ========================================
-# Environment Variables
+# 環境変数
 # ========================================
 
 if [[ "$OSTYPE" == darwin* ]]; then
@@ -11,16 +11,15 @@ export EDITOR='vi'
 export VISUAL='vi'
 export LESS='-g -i -M -R -S -z-4'
 
-# source-highlight による less の構文ハイライト。スクリプトがある環境でのみ有効化する
+# source-highlight で、less で開いたファイルに構文ハイライトを付ける
 if (( $+commands[src-hilite-lesspipe.sh] )); then
   export LESSOPEN="| src-hilite-lesspipe.sh %s"
 fi
 
 # ========================================
-# Load Local Configuration
+# マシン固有の設定
 # ========================================
 
-# Load machine-local zprofile if exists.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprofile.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile.local"
 fi

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Block Bash commands that redundantly target the current working directory.
+"""現在の作業ディレクトリをわざわざ指定した Bash コマンドを、実行前に拒否する PreToolUse フック。
 
-CLAUDE.md の「Bash コマンド実行ルール」を強制するための PreToolUse フック。
-`cd <cwd> &&` プレフィックスと `git -C <cwd>` を検出して deny する。
-permissions.allow のパターンマッチが壊れて毎回プロンプトが出るのを防ぐ。
+先頭の `cd <cwd> &&` や `git -C <cwd>` があると permissions.allow のパターンに一致しなくなり、許可済みのコマンドでも毎回確認が出るので、拒否して書き直させる。
+CLAUDE.md の「Bash コマンド実行ルール」を、モデルの注意に頼らず機械的に守らせるためのもの。
 """
 import json
 import os

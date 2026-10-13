@@ -3,8 +3,11 @@
 
 違反があれば修正済みの文面を理由に添えてコミットを止め、モデルにその文面で再実行させる。
 人間のコミットには効かせない (Claude Code の Bash ツール経由のコミットだけを対象にする) ため、git の commit-msg hook ではなくここに置く。
-読み取れる形式は -m "$(cat <<'EOF' ... EOF)"、-m "..." / -m '...'、-F <file> の 3 つ。それ以外はメッセージを特定できないので検査せず通す。
-textlint は ~/.claude/textlint に npm でインストールされている前提 (setup/claude.sh が用意する)。無ければ何もしない。
+メッセージを読み取れるのは次の 3 つの形式だけで、それ以外は特定できないので検査せずに通す。
+- -m "$(cat <<'EOF' ... EOF)"
+- -m "..." または -m '...'
+- -F <file>
+textlint は setup/claude.sh が ~/.claude/textlint に入れる前提で、入っていなければ何もしない。
 """
 import glob
 import json
@@ -20,7 +23,10 @@ CONFIG = os.path.join(TEXTLINT_DIR, ".textlintrc.json")
 
 
 def env_with_node():
-    """hook は非ログインシェルで動くことがあり、asdf の shim も asdf 本体が PATH に無いと動かないので、node の実体ディレクトリを直接足す。"""
+    """textlint を動かすための、node のディレクトリを PATH の先頭に足した環境変数を返す。
+
+    hook は PATH が設定されていない非ログインシェルで動くことがあり、asdf の shim も asdf 本体が PATH に無いと動かないので、node の実体のディレクトリを直接足す。
+    """
     env = os.environ.copy()
     extra = sorted(glob.glob(os.path.expanduser("~/.asdf/installs/nodejs/*/bin")), reverse=True)
     extra += [os.path.expanduser("~/.asdf/shims"), "/opt/homebrew/bin", "/usr/local/bin"]
