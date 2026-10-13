@@ -1,5 +1,4 @@
 #!/bin/zsh
-# dotfiles の取り込み (pull) と、プラグイン・Homebrew のパッケージの更新 (update) を 1 コマンドで行う
 
 set -e
 
@@ -11,7 +10,9 @@ pull)
   zsh install.sh
   ;;
 update)
-  source "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh"
+  # zshrc はプラグインを antidote の既定の場所ではなく ~/.antidote に置いているので、同じ場所を指定しないと更新対象が見つからない
+  ANTIDOTE_HOME="${ZDOTDIR:-$HOME}/.antidote"
+  source "${ANTIDOTE_HOME}/antidote.zsh"
   antidote update
   if (( $+commands[brew] )); then
     brew bundle --global
