@@ -170,7 +170,8 @@ local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
 # [[ ]] の中ではファイル名展開が起きず glob 修飾子で古さを判定できないので、配列への代入で展開させる
 local -a zcd_stale=( ${zcd_file}(N.mh+24) )
 
-if [[ ! -f "$zcd_file" || -n "$zcd_stale" ]]; then
+# ~/.zshrc.path で fpath に足した補完関数を次の起動で反映するため、~/.zshrc.path が定義ファイルより新しいときも作り直す
+if [[ ! -f "$zcd_file" || -n "$zcd_stale" || "${ZDOTDIR:-$HOME}/.zshrc.path" -nt "$zcd_file" ]]; then
   compinit
   # compinit は補完関数の数が変わったときしか .zcompdump を書き直さず、古いと判定され続けるので更新時刻を進める
   touch "$zcd_file"
@@ -197,7 +198,6 @@ needs_ssh_agent() {
 }
 
 # ssh-agent プラグインは読み込み時に設定を参照するので、読み込みより前に置く
-zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
 
 # 起動のたびにプラグインの一覧を antidote に解釈させると遅いので、一覧が変わったときだけ読み込み用のスクリプトを作り直して、それを読む
