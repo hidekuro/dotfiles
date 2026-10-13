@@ -38,16 +38,22 @@ for skill_path in "${SKILLS_SRC}"/*(N/); do
   echo "  Linked skill: ${skill_name}"
 done
 
-# Copy hooks per file
+# Link hooks per file
+# マシン固有の hook を残すため、hooks/ ディレクトリ全体ではなくファイル単位でリンクする
 HOOKS_SRC="${REPO_ROOT}/claude/hooks"
 HOOKS_DEST="${CLAUDE_DIR}/hooks"
 
 mkdir -p "${HOOKS_DEST}"
 
+for link_path in "${HOOKS_DEST}"/*(N@); do
+  if [[ "$(readlink "${link_path}")" == "${HOOKS_SRC}/"* && ! -e "${link_path}" ]]; then
+    rm "${link_path}"
+  fi
+done
+
 for hook_path in "${HOOKS_SRC}"/*(N.); do
-  cp "${hook_path}" "${HOOKS_DEST}/${hook_path:t}"
-  chmod +x "${HOOKS_DEST}/${hook_path:t}"
-  echo "  Copied hook: ${hook_path:t}"
+  ln -snf "${hook_path}" "${HOOKS_DEST}/${hook_path:t}"
+  echo "  Linked hook: ${hook_path:t}"
 done
 
 # settings.json には業務用の permissions やマーケットプレイスも入るので、ファイルごとではなく hooks 節だけを dotfiles の内容で置き換える
