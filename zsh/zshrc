@@ -190,8 +190,10 @@ zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions co
 autoload -Uz compinit
 
 local zcd_file="${ZDOTDIR:-$HOME}/.zcompdump"
+# [[ ]] の中ではファイル名展開が起きず glob 修飾子で古さを判定できないので、配列への代入で展開させる
+local -a zcd_stale=( ${zcd_file}(N.mh+24) )
 
-if [[ ! -f "$zcd_file" || -n "$zcd_file"(#qN.m+1) ]]; then
+if [[ ! -f "$zcd_file" || -n "$zcd_stale" ]]; then
   # Regenerate .zcompdump if it's more than a day old.
   compinit
 else
