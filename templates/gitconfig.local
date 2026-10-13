@@ -5,8 +5,8 @@
 # git config --global で書いた設定は ~/.gitconfig に入り、こちらより優先される。
 # 以下は記入例なので、必要なものだけコメントを外して書き換える。
 
-# --- 認証の helper ---
-# helper のパスは、OS やインストール方法 (Homebrew など) によって変わる。
+# --- 認証ヘルパー (credential helper) ---
+# 認証ヘルパーのパスは、OS やインストール方法 (Homebrew など) によって変わる。
 # [credential "https://github.com"]
 # 	helper = !/path/to/gh auth git-credential
 

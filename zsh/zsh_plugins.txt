@@ -17,7 +17,7 @@ ohmyzsh/ohmyzsh path:plugins/ssh-agent conditional:needs_ssh_agent
 zsh-users/zsh-completions
 
 # 入力中のコマンドの色分け
-# 後から定義されたウィジェットには色分けが効かないので、ほかのプラグインより後に読み込む
+# 後から定義されたウィジェットには色分けが効かないので、zsh-history-substring-search を除くほかのプラグインより後に読み込む
 zsh-users/zsh-syntax-highlighting
 
 # 上下キーで、入力中の文字列を含む履歴を検索する

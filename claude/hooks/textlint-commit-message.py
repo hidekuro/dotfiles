@@ -23,7 +23,7 @@ CONFIG = os.path.join(TEXTLINT_DIR, ".textlintrc.json")
 
 
 def env_with_node():
-    """textlint を動かすための、node のディレクトリを PATH の先頭に足した環境変数を返す。
+    """textlint を動かすための、node を探す候補のディレクトリを PATH の先頭に足した環境変数を返す。
 
     hook は PATH が設定されていない非ログインシェルで動くことがあり、asdf の shim も asdf 本体が PATH に無いと動かないので、node の実体のディレクトリを直接足す。
     """
