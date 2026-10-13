@@ -196,6 +196,8 @@ local -a zcd_stale=( ${zcd_file}(N.mh+24) )
 if [[ ! -f "$zcd_file" || -n "$zcd_stale" ]]; then
   # Regenerate .zcompdump if it's more than a day old.
   compinit
+  # compinit は補完関数の数が変わったときしか .zcompdump を書き直さず、古いと判定され続けるので更新時刻を進める
+  touch "$zcd_file"
 else
   # Otherwise, initialize with the cache for faster startup.
   compinit -C
