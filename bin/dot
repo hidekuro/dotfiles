@@ -1,0 +1,24 @@
+#!/bin/zsh
+# dotfiles の取り込み (pull) と、プラグイン・Homebrew のパッケージの更新 (update) を 1 コマンドで行う
+
+set -e
+
+cd "${0:A:h:h}"
+
+case "$1" in
+pull)
+  git pull --ff-only
+  zsh install.sh
+  ;;
+update)
+  source "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh"
+  antidote update
+  if (( $+commands[brew] )); then
+    brew bundle --global
+  fi
+  ;;
+*)
+  echo "Usage: dot pull|update" >&2
+  exit 1
+  ;;
+esac

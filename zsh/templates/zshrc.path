@@ -1,0 +1,17 @@
+# ~/.zshrc.path
+#
+# This file is loaded by zshrc just before compinit.
+# Use it only for machine-specific path and fpath settings,
+# so that added completion directories are picked up by compinit.
+
+# Example: Add custom binary directories
+# path=(
+#   /opt/my-custom-tool/bin
+#   $path
+# )
+
+# Example: Add custom completion directories
+# fpath=(
+#   $HOME/.my-completions
+#   $fpath
+# )

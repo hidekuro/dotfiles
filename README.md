@@ -1,6 +1,6 @@
 # Dotfiles
 
-軽量なプラグインマネージャー [Antidote](https://github.com/mattmc3/antidote) を使用したzsh設定です。
+軽量なプラグインマネージャー [Antidote](https://github.com/mattmc3/antidote) を使用した zsh 設定です。
 
 ## 必要環境
 
@@ -22,12 +22,26 @@ zsh ~/.dotfiles/install.sh
 
 インストールスクリプトは以下を実行します：
 
-- Antidoteのインストール（未インストールの場合）
-- zsh設定ファイルのシンボリックリンク作成
+- Antidote のインストール（未インストールの場合）
+- zsh 設定ファイルのシンボリックリンク作成
 - vim、git、その他の設定ファイルのセットアップ
 - テンプレートファイルからローカル設定ファイルの作成
 
 初回起動時、プラグインが自動的にダウンロードされます。
+
+### 日々の運用
+
+インストール後は `dot` コマンドが使えます。
+
+```bash
+# リポジトリの変更を取り込み、install.sh を再実行する
+dot pull
+
+# zsh のプラグインと Brewfile のパッケージを更新する
+dot update
+```
+
+手元の変更をほかのマシンに渡すときは、通常どおり `git push` します。
 
 ## マシン固有の追加設定
 
@@ -41,27 +55,27 @@ zsh ~/.dotfiles/install.sh
 | `~/.zshenv.local`   | すべてのシェルで必要な環境変数    | すべてのシェル起動時                            |
 | `~/.zprofile.local` | ログインシェル用の設定            | ログインシェル起動時（`zshrc` の前）            |
 | `~/.zshrc.path`     | `path`, `fpath` の設定            | インタラクティブシェル起動時（`compinit` の前） |
-| `~/.zshrc.local`    | `export`, `alias` などの基本設定  | インタラクティブシェル起動時（`compinit` の前） |
-| `~/.zshrc.post`     | ツールの初期化 (`eval`, `source`) | インタラクティブシェル起動時（`compinit` の後） |
+| `~/.zshrc.local`    | `export`, `alias`, ツールの初期化 | インタラクティブシェル起動時（`zshrc` の最後）  |
 | `~/.zlogin.local`   | ログインシェル用の設定            | ログインシェル起動時（`zshrc` の後）            |
 | `~/.zlogout.local`  | ログアウト時の処理                | ログインシェル終了時                            |
 
-### ~/.zshrc.post の推奨記法
+### ~/.zshrc.local の推奨記法
 
-`~/.zshrc.post` は補完システム（compinit）の後に読み込まれるため、ツールの初期化に適しています。
+`~/.zshrc.local` は補完システム（compinit）の後に読み込まれるため、ツールの初期化に適しています。
 ただし、コマンドが存在しない場合のエラーを避けるため、必ず存在確認を行ってください：
 
 ```zsh
 # 良い例：コマンドの存在を確認
-if (( $+commands[direnv] )); then
-  eval "$(direnv hook zsh)"
+if (( $+commands[pipx] )); then
+  eval "$(register-python-argcomplete pipx)"
 fi
 
 # 悪い例：コマンドが存在しない場合エラーになる
-eval "$(direnv hook zsh)"  # NG: direnvがない場合エラー
+eval "$(register-python-argcomplete pipx)"  # NG: pipxがない場合エラー
 ```
 
-詳細は `zsh/templates/zshrc.post` のテンプレートを参照してください。
+補完関数のディレクトリを `fpath` に足すときは、`compinit` の前に読み込まれる `~/.zshrc.path` に書いてください。
+詳細は `zsh/templates/zshrc.local` と `zsh/templates/zshrc.path` のテンプレートを参照してください。
 
 ## プラグインのカスタマイズ
 
@@ -72,7 +86,7 @@ eval "$(direnv hook zsh)"  # NG: direnvがない場合エラー
 
 ```bash
 # 例：プラグインの追加
-echo "zsh-users/zsh-completions" >> ~/dotfiles/zsh/zsh_plugins.txt
+echo "zsh-users/zsh-completions" >> ~/.dotfiles/zsh/zsh_plugins.txt
 
 # 変更を反映（静的プラグインファイルの再生成）
 rm ~/.zsh_plugins.zsh
@@ -96,7 +110,7 @@ olets/zsh-abbr kind:defer
 sindresorhus/pure kind:fpath
 ```
 
-詳しくは [Antidote公式ドキュメント](https://getantidote.github.io/) を参照してください。
+詳しくは [Antidote 公式ドキュメント](https://getantidote.github.io/) を参照してください。
 
 ## トラブルシューティング
 
@@ -111,20 +125,20 @@ exec zsh
 
 ### プラグインが読み込まれない
 
-Antidoteを再インストール：
+Antidote を再インストール：
 
 ```bash
 rm -rf ~/.antidote ~/.zsh_plugins.zsh
 exec zsh
 ```
 
-### "command not found: direnv" (またはその他のツール)
+### "command not found: pipx" (またはその他のツール)
 
-`~/.zshrc.post` でコマンドの存在確認を追加：
+`~/.zshrc.local` でコマンドの存在確認を追加：
 
 ```zsh
-if (( $+commands[direnv] )); then
-  eval "$(direnv hook zsh)"
+if (( $+commands[pipx] )); then
+  eval "$(register-python-argcomplete pipx)"
 fi
 ```
 

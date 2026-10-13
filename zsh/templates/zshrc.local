@@ -1,26 +1,11 @@
 # ~/.zshrc.local
 #
 # This file is loaded at the end of zshrc for local customizations.
-# Use it for PATH modifications, environment variables, aliases, and tool initializations.
+# Use it for environment variables, aliases, and tool initializations.
+# Put path and fpath settings in ~/.zshrc.path instead.
 #
 # IMPORTANT: Always check if commands exist before running them
 # to avoid "command not found" errors.
-
-# ========================================
-# PATH Configuration
-# ========================================
-
-# Example: Add custom binary directories
-# path=(
-#   /opt/my-custom-tool/bin
-#   $path
-# )
-
-# Example: Add custom completion directories
-# fpath=(
-#   $HOME/.my-completions
-#   $fpath
-# )
 
 # ========================================
 # Environment Variables
@@ -32,10 +17,6 @@
 # ========================================
 # Aliases
 # ========================================
-
-# Common ls aliases (inherit platform-specific ls settings)
-alias ll="${aliases[ls]:-ls} -lh"
-alias la="${aliases[ls]:-ls} -lAh"
 
 # Example: Colored grep
 # alias grep="grep --color=auto"
@@ -52,11 +33,6 @@ alias la="${aliases[ls]:-ls} -lAh"
 # Example: pipx (Python tool installer)
 # if (( $+commands[pipx] )); then
 #   eval "$(register-python-argcomplete pipx)"
-# fi
-
-# Example: direnv (directory environment manager)
-# if (( $+commands[direnv] )); then
-#   eval "$(direnv hook zsh)"
 # fi
 
 # Example: 1Password CLI plugins

@@ -7,16 +7,6 @@
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
 mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
 
-# Detect if we should enable SSH agent management
-# Disable in DevContainers/Codespaces as they forward the host's SSH agent
-# Also disable if 1Password SSH Agent or Bitwarden SSH Agent is configured
-if [[ -z "$REMOTE_CONTAINERS" && -z "$CODESPACES" && \
-     -n "$SSH_AUTH_SOCK" && ! "$SSH_AUTH_SOCK" =~ (1password|bitwarden) ]]; then
-  enable_ssh_agent=true
-else
-  enable_ssh_agent=false
-fi
-
 # ========================================
 # Colors (set early for other modules)
 # ========================================
@@ -33,7 +23,6 @@ colors 2>/dev/null
 # History Configuration
 # ========================================
 
-export HISTCONTROL="ignoreboth"
 HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
 HISTSIZE=500000
 SAVEHIST=500000
@@ -88,6 +77,7 @@ bindkey '^[[3;3~' delete-word            # Alt/Option + Delete (forward)
 path=(
   $HOME/.local/bin(N-/)
   $HOME/bin(N-/)
+  $DOTFILES_DIR/bin(N-/)
   $path
 )
 
@@ -111,16 +101,12 @@ fi
 # asdf-vm Integration
 # ========================================
 
-# Source asdf if installed via Homebrew
-if [[ -f "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh" ]]; then
-  source "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
-# Or if installed directly
-elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
-  source "$HOME/.asdf/asdf.sh"
-fi
-
-# Add asdf completions to fpath
-if ( type asdf &>/dev/null ); then
+# asdf 0.16 以降は読み込むシェル統合のスクリプトが無く、shims と補完のディレクトリを通すだけで動く
+if (( $+commands[asdf] )); then
+  path=(
+    ${ASDF_DATA_DIR:-$HOME/.asdf}/shims
+    $path
+  )
   fpath=(
     ${ASDF_DATA_DIR:-$HOME/.asdf}/completions(N-/)
     $fpath
@@ -186,6 +172,11 @@ zstyle ':completion:*' list-separator ' -- '
 # Show alias definitions in completion descriptions
 zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
 
+# Load machine-local path/fpath settings before compinit so that added completion directories are picked up
+if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.path" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.path"
+fi
+
 # Initialize completion system BEFORE loading plugins
 autoload -Uz compinit
 
@@ -217,13 +208,14 @@ fi
 # Source Antidote
 source "$ANTIDOTE_HOME/antidote.zsh"
 
-# Set plugin loading prefix based on SSH agent availability
-# In DevContainers/Codespaces, comment out the ssh-agent plugin line
-if [[ "$enable_ssh_agent" == "true" ]]; then
-  _comment_if_devcontainer=''
-else
-  _comment_if_devcontainer='#'
-fi
+# launchd・1Password・devcontainer の転送などで agent が用意済みなら、別の agent を起動しない
+needs_ssh_agent() {
+  [[ -z "$SSH_AUTH_SOCK" ]]
+}
+
+# ssh-agent プラグインは読み込み時に設定を参照するので、読み込みより前に置く
+zstyle :omz:plugins:ssh-agent agent-forwarding on
+zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
 
 # Load plugins from static file (faster startup)
 ANTIDOTE_PLUGINS="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
@@ -236,22 +228,9 @@ fi
 
 source "$ANTIDOTE_PLUGINS"
 
-# Load ssh-agent plugin conditionally (skipped in DevContainers/Codespaces)
-if [[ "$enable_ssh_agent" == "true" ]]; then
-  # Add plugin path to fpath and source it (same pattern as antidote-generated plugins)
-  fpath+=("$ANTIDOTE_HOME/https-COLON--SLASH--SLASH-github.com-SLASH-ohmyzsh-SLASH-ohmyzsh/plugins/ssh-agent")
-  source "$ANTIDOTE_HOME/https-COLON--SLASH--SLASH-github.com-SLASH-ohmyzsh-SLASH-ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh"
-fi
-
 # ========================================
 # Plugin-Specific Configuration
 # ========================================
-
-# SSH Agent plugin configuration (only if plugin is loaded)
-if [[ "$enable_ssh_agent" == "true" ]]; then
-  zstyle :omz:plugins:ssh-agent agent-forwarding on
-  zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
-fi
 
 # History substring search key bindings (after plugin load)
 # Note: Must be set AFTER zsh-history-substring-search plugin is loaded
@@ -293,6 +272,14 @@ if [[ -f "$HOMEBREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc" ]]; then
 fi
 
 # ========================================
+# direnv
+# ========================================
+
+if (( $+commands[direnv] )); then
+  eval "$(direnv hook zsh)"
+fi
+
+# ========================================
 # Platform-Specific Settings
 # ========================================
 
@@ -309,6 +296,9 @@ case $OSTYPE in
     alias ls="ls -F --color=auto --time-style=long-iso"
     ;;
 esac
+
+alias ll="${aliases[ls]:-ls} -lh"
+alias la="${aliases[ls]:-ls} -lAh"
 
 # ========================================
 # Misc Options
