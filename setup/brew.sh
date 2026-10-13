@@ -21,8 +21,8 @@ darwin*)
   echo "  Linked Brewfile"
   ;;
 *)
-  ln -snf "${REPO_ROOT}/Brewfile.linux" "${HOME}/.Brewfile"
-  echo "  Linked Brewfile.linux"
+  ln -snf "${REPO_ROOT}/Brewfile-linux" "${HOME}/.Brewfile"
+  echo "  Linked Brewfile-linux"
   ;;
 esac
 
