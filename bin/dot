@@ -18,8 +18,13 @@ update)
     brew bundle --global
   fi
   ;;
+dump)
+  # Homebrew 以外のパッケージマネージャーで入れるツールは、マシンごとに必要になったときに入れるので、Brewfile に書き出さない
+  brew bundle dump --global --force --no-describe --tap --formula --cask
+  git diff -- Brewfile Brewfile-linux
+  ;;
 *)
-  echo "Usage: dot pull|update" >&2
+  echo "Usage: dot pull|update|dump" >&2
   exit 1
   ;;
 esac

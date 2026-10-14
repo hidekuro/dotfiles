@@ -39,6 +39,9 @@ dot pull
 
 # zsh のプラグインと Brewfile のパッケージを更新する
 dot update
+
+# このマシンにインストールされているパッケージを Brewfile に書き出し、差分を表示する
+dot dump
 ```
 
 手元の変更をほかのマシンに渡すときは、通常どおり `git push` します。
