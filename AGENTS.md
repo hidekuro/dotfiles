@@ -11,6 +11,7 @@
   - zsh のプラグインは全マシンで共通にする
   - それ以外のマシン固有の zsh の設定は `~/.zshenv.local`・`~/.zshrc.path`・`~/.zshrc.local` などに置く
   - マシン固有の git の設定は `~/.gitconfig` (`git config --global` の書き込み先) と `~/.gitconfig.local` に置く
+  - 言語やツールのバージョンは mise で管理する。マシンごとにバージョンが違うので、グローバルのバージョンと mise の設定は `~/.config/mise/config.toml` に置き、リポジトリでは管理しない
 - 主な環境は macOS。Linux (WSL) は、できる範囲で macOS の環境に寄せる
   - Linux で使えない機能は、エラーにせず無効になるだけでよい。Linux のためだけに仕組みを複雑にしない
   - どのツールが入っている前提で書くかは Brewfile で判断する。Brewfile-linux は Brewfile に追いついていないが、頼まれない限り Brewfile と同期しない

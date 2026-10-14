@@ -9,7 +9,6 @@
 - -F <file>
 textlint は setup/claude.sh が ~/.claude/textlint に入れる前提で、入っていなければ何もしない。
 """
-import glob
 import json
 import os
 import re
@@ -25,11 +24,11 @@ CONFIG = os.path.join(TEXTLINT_DIR, ".textlintrc.json")
 def env_with_node():
     """textlint を動かすための、node を探す候補のディレクトリを PATH の先頭に足した環境変数を返す。
 
-    hook は PATH が設定されていない非ログインシェルで動くことがあり、asdf の shim も asdf 本体が PATH に無いと動かないので、node の実体のディレクトリを直接足す。
+    hook は PATH が設定されていない非ログインシェルで動くことがあるので、mise の shims と Homebrew の bin を直接足す。
+    mise の shim は mise 本体へのシンボリックリンクなので、mise 本体が PATH に無くても動く。
     """
     env = os.environ.copy()
-    extra = sorted(glob.glob(os.path.expanduser("~/.asdf/installs/nodejs/*/bin")), reverse=True)
-    extra += [os.path.expanduser("~/.asdf/shims"), "/opt/homebrew/bin", "/usr/local/bin"]
+    extra = [os.path.expanduser("~/.local/share/mise/shims"), "/opt/homebrew/bin", "/usr/local/bin"]
     env["PATH"] = os.pathsep.join(extra + [env.get("PATH", "")])
     return env
 

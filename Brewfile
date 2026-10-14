@@ -10,7 +10,6 @@ tap "mackerelio/mackerel-agent", trusted: true
 tap "oktadev/tap", "https://github.com/oktadev/homebrew-tap.git", trusted: true
 tap "songmu/tap", trusted: true
 brew "ansifilter"
-brew "asdf"
 brew "atlas"
 brew "readline"
 brew "xz"
@@ -71,6 +70,7 @@ brew "jq"
 brew "lesspipe"
 brew "libzip"
 brew "logrotate", restart_service: :changed
+brew "mise"
 brew "mkcert"
 brew "mysql-client"
 brew "nginx"
