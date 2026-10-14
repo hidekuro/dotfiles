@@ -1,7 +1,6 @@
 brew "coreutils"
 brew "awscli"
 brew "bat"
-brew "gettext"
 brew "diffutils"
 brew "direnv"
 brew "fd"
