@@ -28,7 +28,43 @@ gh pr view {pr_number} --json title,body,author,baseRefName,headRefName,url,addi
 
 `url` から読み取れる `{owner}/{repo}` は、5 で JSON を作るときと、レビューを投稿するときに使う。PR が現在のディレクトリとは別のリポジトリにある場合は、`gh pr view`・`gh pr diff`・`gh pr checks` に `-R {owner}/{repo}` を付ける。
 
-#### 2.2 依存関係更新 PR の判定
+#### 2.2 既存のレビューコメントの確認
+
+すでに付いているレビューコメントを取得し、同じ指摘を重ねないようにする。同じ指摘が並ぶと、作者はどちらに返信すればよいか迷い、同じ対応を二度求められたように受け取るため。依存関係更新 PR でも行う。
+
+行に付いたスレッド・レビュー全体の本文・PR の会話のコメントを、1 回の GraphQL で取得する。REST API と `gh pr view` では、解決済みかどうかや、レビューの URL が取れないため。
+
+```bash
+gh api graphql -F owner='{owner}' -F repo='{repo}' -F pr={pr_number} -f query='query($owner:String!,$repo:String!,$pr:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviewThreads(first:100){totalCount nodes{isResolved isOutdated path line originalLine comments(first:50){totalCount nodes{url author{login} body}}}} reviews(first:100){totalCount nodes{url author{login} state body}} comments(first:100){totalCount nodes{url author{login} body}}}}}' --jq '.data.repository.pullRequest | {threadCount: .reviewThreads.totalCount, reviewCount: .reviews.totalCount, commentCount: .comments.totalCount, threads: [.reviewThreads.nodes[] | {path, line: (.line // .originalLine), isResolved, isOutdated, commentCount: .comments.totalCount, comments: [.comments.nodes[] | {url, author: .author.login, body}]}], reviews: [.reviews.nodes[] | select(.body != "") | {url, author: .author.login, state, body}], comments: [.comments.nodes[] | {url, author: .author.login, body}]}'
+```
+
+- `{owner}` と `{repo}` は gh がカレントディレクトリのリポジトリで埋める。PR が別のリポジトリにあるときは実際の値で埋める
+- 取得の上限は、スレッド・レビュー・会話のコメントが各 100 件、1 スレッドあたりのコメントが 50 件。`threadCount`・`reviewCount`・`commentCount` が上限を超えていたら、5 の報告で取得しきれなかったことを伝える
+
+既存のコメント (解決済みのスレッドも含む) がすでに指摘している問題は、指摘しない。原因と直し方が同じなら、コメントを付けた行や言い回しが違っても同じ指摘とみなす。
+
+ただし、既存のコメントが問題の一部しか捉えておらず、見落とした部分だけで [must] か [should] に当たるときは指摘する。
+
+- 例
+  - 既存のコメントの修正案では直らない、または修正案が別の不具合を生む
+  - 既存のコメントは書き方の問題として扱っているが、実際には通常の使い方で実行時エラーになる
+  - 同じ問題がほかの箇所にもあるのに、既存のコメントは 1 箇所しか挙げていない
+- 本文の 1 段落目で既存のコメントの URL を示し、見落とした部分だけを書く。既存のコメントの内容は繰り返さない
+- 重要度は、見落とした部分に対して付ける
+
+既存のコメントの妥当性も評価し、5 でチャットに報告する。GitHub には投稿しない。レビューを依頼したユーザーが、既存の指摘のどれを作者に求めるべきかを判断できるようにするため。
+
+- 対象は、未解決のスレッドと、コードへの指摘を含むレビュー全体の本文・会話のコメント
+  - 指摘を含まないもの (承認の一言、CI の結果を知らせる bot のコメントなど) と、PR の作者のコメントは対象外にする。作者の返信は、評価の判断材料として読む
+- outdated のスレッドは、行番号が変更前のコードのものなので、指摘が今のコードにも当てはまるかで評価する
+- 判定は次のいずれかにする
+  - 妥当: 指摘した問題が実際にあり、修正案や重要度があればそれも正しい
+  - 一部妥当: 問題はあるが、原因・修正案・重要度のどれかが誤っている
+  - 妥当でない: 指摘した問題が起きない、または今のコードには当てはまらない
+  - 判断できない: 確かめるのに PR の外の情報 (仕様や運用の事情) が要る
+- 妥当以外の判定には、根拠を 1〜2 文で付ける。妥当でないと判定するときは、問題が起きない理由を示すコードを `ファイル:行` で示す
+
+#### 2.3 依存関係更新 PR の判定
 
 取得した情報から、PR が renovate / dependabot による依存関係更新かを判定する。次のいずれかに該当する場合、後述の「依存関係更新 PR のレビュー」フローに分岐する:
 
@@ -37,13 +73,13 @@ gh pr view {pr_number} --json title,body,author,baseRefName,headRefName,url,addi
 
 判定が真の場合は、通常のコードレビュー観点ではなく、依存パッケージ更新の安全性評価を行う。専用フローの詳細は `references/dependency-update-review.md` を読んで実施する。
 
-#### 2.3 変更ファイル一覧の取得
+#### 2.4 変更ファイル一覧の取得
 
 ```bash
 gh pr diff {pr_number} --name-only
 ```
 
-#### 2.4 コード差分の取得
+#### 2.5 コード差分の取得
 
 ファイル数が多い場合は、トークン使用量を考慮して以下を実施:
 
@@ -201,14 +237,33 @@ const result = user?.profile?.email?.toLowerCase() ?? '';
 
    - `--method POST` は省略・短縮せず、この形で書く。ユーザーの権限設定はこの書き方に一致したときに確認を出すため
    - 書きかけのレビューがすでにあると、作成は失敗する。そのときは、GitHub の画面で書きかけのレビューを送信するか破棄するようユーザーに伝え、済んだと言われたら同じコマンドで作成し直す
-   - 作成後は、PR の URL と承認可否・指摘の件数だけを示し、GitHub の「Files changed」画面で内容を確かめてから、Approve / Request changes / Comment のいずれかを選んで送信するよう伝える。内容を直したいときは、画面で編集するか、下書きを破棄して修正を指示すればよいことも添える
+   - 作成後は、PR の URL と承認可否・指摘の件数・既存のレビューコメントの評価 (手順 4) だけを示し、GitHub の「Files changed」画面で内容を確かめてから、Approve / Request changes / Comment のいずれかを選んで送信するよう伝える。内容を直したいときは、画面で編集するか、下書きを破棄して修正を指示すればよいことも添える
 
-3. インラインコメントが 0 件のときは、下書きにしない。本文だけの下書きは、GitHub の画面から送信する手段がないため。代わりにレビュー全体の本文をチャットに表示し、投稿の指示を受けたときだけ投稿する
+3. インラインコメントが 0 件のときは、下書きにしない。本文だけの下書きは、GitHub の画面から送信する手段がないため。代わりにレビュー全体の本文と既存のレビューコメントの評価 (手順 4) をチャットに表示し、投稿の指示を受けたときだけ投稿する
    - 投稿の指示を受けたら、送信の種別を付けて手順 1 のスクリプトを再実行し、手順 2 と同じコマンドで投稿する。種別は、承認の指示なら `APPROVE`、修正要求の指示なら `REQUEST_CHANGES`、それ以外は `COMMENT` にする
 
      ```bash
      python3 ~/.claude/skills/review-pr/scripts/build_review.py {owner}/{repo} {pr_number} {Markdown ファイルのパス} COMMENT
      ```
+
+4. 既存のレビューコメントの評価 (2.2) は、次の形式でチャットに示す。評価の対象が 1 件もなければ省く
+
+   ```markdown
+   ### 既存のレビューコメントの評価
+
+   - 妥当でない
+     - `service.js:42` (alice) https://github.com/{owner}/{repo}/pull/{pr_number}#discussion_r...
+       - `user.profile` は `auth.js:18` で必ず設定されるので、null にはならない
+   - 一部妥当
+     - レビュー全体の本文 (bob) https://github.com/{owner}/{repo}/pull/{pr_number}#pullrequestreview-...
+       - 指摘した競合は起きるが、提案のロックでは別のプロセスからの書き込みを防げない
+   - 妥当
+     - `api.ts:12` (carol) https://github.com/{owner}/{repo}/pull/{pr_number}#discussion_r...
+   ```
+
+   - 判定は、妥当でない・一部妥当・判断できない・妥当の順に並べる。ユーザーが作者への対応を考える必要がある順にするため
+   - 該当のない判定は省く
+   - 2.2 で取得の上限を超えていたら、取得しきれなかったコメントがあることを添える
 
 ## エラーハンドリング
 
