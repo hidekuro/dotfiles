@@ -2,7 +2,7 @@
 
 使い方: build_review.py <owner/repo> <pr_number> <review.md> [COMMENT|APPROVE|REQUEST_CHANGES]
 
-review.md の拡張子を .json に変えたパスに JSON を書き出し、そのパスを標準出力に出す。
+review.md の拡張子を .json に変えたパスに JSON を書き出し、そのパスとインラインコメントの一覧を標準出力に出す。
 送信の種別を省くと、レビューは送信前の下書き (PENDING) になる。
 インラインコメントの行が差分の外にあると API がレビュー全体を受け付けないため、JSON を書き出す前にここで検出する。
 """
@@ -15,6 +15,7 @@ from pathlib import Path
 
 HUNK_HEADER = re.compile(r"^@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@")
 COMMENT_MARKER = re.compile(r"^<!-- comment (.+?) -->$", re.MULTILINE)
+HEADLINE = re.compile(r"^\*\*No\. .+$", re.MULTILINE)
 
 
 def gh_api(path, *args):
@@ -97,6 +98,12 @@ def main():
     json_path = Path(review_path).with_suffix(".json")
     json_path.write_text(json.dumps(review, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json_path)
+    for c in comments:
+        m = HEADLINE.search(c["body"])
+        headline = m[0] if m else c["body"].splitlines()[0]
+        start = c.get("start_line", c["line"])
+        location = f"{c['path']}:{start}" + (f"-{c['line']}" if start != c["line"] else "")
+        print(f"- {headline} (`{location}`)")
 
 
 if __name__ == "__main__":
