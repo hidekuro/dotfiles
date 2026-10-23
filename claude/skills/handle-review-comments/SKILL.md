@@ -19,16 +19,10 @@ PR が存在しない場合は、ユーザーに PR 番号または PR URL の�
 
 ### 2. レビューコメントの取得
 
-行に付いたコメントは、スレッド単位で GraphQL から取得する。REST API のレビューコメントには、解決済みかどうかの情報が含まれないため。
+行に付いたスレッド・レビュー全体の本文・PR の会話のコメントを、1 回の GraphQL で取得する。REST API のレビューコメントには、解決済みかどうかの情報が含まれないため。
 
 ```bash
-gh api graphql -F owner='{owner}' -F repo='{repo}' -F pr={pr} -f query='query($owner:String!,$repo:String!,$pr:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviewThreads(first:100){totalCount nodes{isResolved isOutdated path line originalLine comments(first:50){totalCount nodes{databaseId author{login __typename} body}}}}}}}' --jq '{threadCount: .data.repository.pullRequest.reviewThreads.totalCount, threads: [.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not) | {path, line: (.line // .originalLine), isOutdated, commentCount: .comments.totalCount, comments: [.comments.nodes[] | {id: .databaseId, author: .author.login, type: .author.__typename, body}]}]}'
-```
-
-レビュー全体に付いたコメント (行に紐付かない総評) は別に取得する。
-
-```bash
-gh pr view {pr} --json reviews --jq '[.reviews[] | select(.body != "") | {author: .author.login, state, body}]'
+gh api graphql -F owner='{owner}' -F repo='{repo}' -F pr={pr} -f query='query($owner:String!,$repo:String!,$pr:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviewThreads(first:100){totalCount nodes{id isResolved isOutdated path line originalLine comments(first:50){totalCount nodes{databaseId author{login __typename} body}}}} reviews(first:100){totalCount nodes{author{login __typename} state body}} comments(first:100){totalCount nodes{url author{login __typename} body}}}}}' --jq '.data.repository.pullRequest | {threadCount: .reviewThreads.totalCount, reviewCount: .reviews.totalCount, commentCount: .comments.totalCount, threads: [.reviewThreads.nodes[] | select(.isResolved | not) | {threadId: .id, path, line: (.line // .originalLine), isOutdated, commentCount: .comments.totalCount, comments: [.comments.nodes[] | {id: .databaseId, author: .author.login, type: .author.__typename, body}]}], reviews: [.reviews.nodes[] | select(.body != "") | {author: .author.login, type: .author.__typename, state, body}], comments: [.comments.nodes[] | {url, author: .author.login, type: .author.__typename, body}]}'
 ```
 
 **重要な注意点**:
@@ -36,7 +30,8 @@ gh pr view {pr} --json reviews --jq '[.reviews[] | select(.body != "") | {author
 - まず全コメントを取得する (ユーザー名で絞り込まない)
 - outdated のスレッド (コードの変更で行がずれたもの) は除外しない。行番号は変更前のコードのものになるので、指摘が今のコードにも当てはまるかを確認する
 - スレッド内の返信も読み、すでに返信や合意が済んでいるかを判断する
-- 取得の上限はスレッド 100 件、1 スレッドあたりのコメント 50 件。`threadCount` や `commentCount` が上限を超えていたらユーザーに伝える
+- レビュー全体の本文と会話欄のコメントのうち、指摘を含まないもの (承認の一言、CI の結果を知らせる bot のコメントなど) と PR の作者のコメントは、分析の対象から外す。作者のコメントは判断材料として読む
+- 取得の上限はスレッド 100 件、1 スレッドあたりのコメント 50 件、レビュー全体の本文・会話のコメントは各 100 件。`threadCount`・`reviewCount`・`commentCount` が上限を超えていたらユーザーに伝える
 - `{owner}` と `{repo}` は gh がカレントディレクトリのリポジトリで埋める。別リポジトリの PR を URL で指定されたときは実際の値で埋める
 
 ### 3. コメントの分類
@@ -58,6 +53,11 @@ gh pr view {pr} --json reviews --jq '[.reviews[] | select(.body != "") | {author
    - 影響範囲 (大/中/小/些細)
 3. **推奨**: 対応すべきか (はい/いいえ/検討)
 4. **理由**: この推奨の根拠
+
+あわせて、次の 2 点を確かめる。
+
+- 同じ投稿者が同じ前提で付けた指摘は、まとめて検証する。1 件の前提が誤りなら、ほかの指摘も同じ誤りを含んでいないか疑う
+- 対応を勧める指摘と同じ問題が PR 内のほかの箇所にないかを確かめ、あれば表の要約に書き添える
 
 分析結果を表形式で提示する。
 
@@ -89,13 +89,27 @@ gh pr view {pr} --json reviews --jq '[.reviews[] | select(.body != "") | {author
 
 コミットハッシュはリモートに無いとレビュアーが辿れないので、返信は push の後に行う。
 
-対応したスレッドごとに返信文 (対応内容 1 行とコミットハッシュ) を一覧で提示し、承認を得てから投稿する。返信先はスレッドの先頭コメントの `id` にする。GitHub の API は返信への返信を受け付けないため。
+返信の前に、自分の下書きのレビュー (PENDING) が残っていないかを確かめる。残っていると、返信の API が 422 エラーで失敗するため。件数が 1 以上なら、GitHub の画面で送信か破棄をするようユーザーに伝え、済んだと言われてから返信する。
+
+```bash
+gh api graphql -F owner='{owner}' -F repo='{repo}' -F pr={pr} -f query='query($owner:String!,$repo:String!,$pr:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviews(states:PENDING,first:1){totalCount}}}}' --jq '.data.repository.pullRequest.reviews.totalCount'
+```
+
+対応したスレッドごとに返信文 (対応内容 1 行とコミットハッシュ) を一覧で提示し、承認を得てから投稿する。返信文の一覧には、スレッドを解決するかの列を付け、既定は「しない」にする。チームによってはレビュアーが解決する慣習があるため。返信先はスレッドの先頭コメントの `id` にする。GitHub の API は返信への返信を受け付けないため。
+
+返信文の 1 行目には `<sub>🤖 Claude <モデル名> による返信</sub>` を書き、空行を挟んで対応内容を続ける。返信はユーザーのアカウントで投稿されるので、読む前に Claude が書いたものだと分かるようにするため。`<モデル名>` は review-pr の 4.2 と同じ書き方にする。
 
 ```bash
 gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies -f body='<返信文>'
 ```
 
-レビュー全体に付いたコメントにはスレッドがないので、返信が要るときは `gh pr comment` で PR に投稿する。対応しなかったコメントに返信するかどうかは、ユーザーの指示に従う。
+ユーザーが「する」を選んだスレッドだけ、返信の後に手順 2 の `threadId` で解決する。
+
+```bash
+gh api graphql -f threadId='<threadId>' -f query='mutation($threadId:ID!){resolveReviewThread(input:{threadId:$threadId}){thread{isResolved}}}'
+```
+
+レビュー全体の本文と会話欄のコメントにはスレッドがないので、返信が要るときは `gh pr comment` で PR に投稿する。この返信にも同じ署名を付ける。対応しなかったコメントに返信するかどうかは、ユーザーの指示に従う。
 
 投稿後は次のステップ (例: レビュー再依頼) を提案する。
 
