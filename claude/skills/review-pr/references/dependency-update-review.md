@@ -17,6 +17,7 @@ gh pr diff {pr_number}
 - `go.mod`, `go.sum`
 - `pyproject.toml`, `poetry.lock`, `requirements.txt`
 - `Cargo.toml`, `Cargo.lock`
+- `cpanfile`, `cpanfile.snapshot`
 - `.github/workflows/*.yml` (GitHub Actions の更新)
 
 抽出する情報:
@@ -30,7 +31,7 @@ gh pr diff {pr_number}
 
 PR 本文に renovate / dependabot が埋め込んだ release notes / changelog が含まれることが多い。まず PR 本文を確認する。
 
-PR 本文に十分な情報がない、または major / minor 更新で breaking changes を確認したい場合は、上流リポジトリの releases を取得する。
+PR 本文に十分な情報がない、または major / minor 更新で breaking changes を確認したい場合は、上流リポジトリの releases を取得する。更新前と更新後の間にあるリリースはすべて確認する。間のリリースで入った breaking changes は、更新後のバージョンのリリースノートには載らないため。
 
 ```bash
 # GitHub 上のリポジトリの場合
@@ -38,13 +39,24 @@ gh release view {tag} --repo {owner}/{repo}
 gh release list --repo {owner}/{repo} --limit 20
 ```
 
-GitHub 以外の場所にある場合は WebFetch で公式の changelog / release notes を取得する。
+GitHub の releases にない場合は、上流リポジトリの CHANGELOG ファイルか、パッケージレジストリのページを WebFetch で取得する。
+
+- Perl: metacpan.org
+- npm: npmjs.com
+- Python: pypi.org
+- Ruby: rubygems.org
+- Go: pkg.go.dev
+- Rust: crates.io
+
+どこからも取得できなかったリリースは、評価レポートで「未確認」と書き、推測で補わない。
 
 確認する観点:
 
 - breaking changes の有無
 - security fix の有無 (含まれていればマージ優先度が上がる)
 - deprecation 通知
+- デフォルト挙動の変更 (設定を明示していない利用箇所は、breaking changes と書かれていなくても動作が変わる)
+- 必要なランタイム (Perl / Node.js / Python / Go など) の最小バージョンの変更
 - 新機能の概要 (プロジェクトで利用しているものに関連するか)
 
 ## C. CI ステータスの確認
@@ -84,11 +96,14 @@ gh pr checks {pr_number} --json name,state,link
 
 ### D.2 利用箇所の検索
 
-検索を実施する場合は、パッケージに応じたパターンで grep する。
+検索を実施する場合は、コード中の読み込み (`import` / `use` / `require`) と、パッケージ名を書いた設定ファイルを、パッケージに応じたパターンで grep する。
 
 ```bash
 # 例: npm パッケージ
 rg -l "from ['\"]{package_name}['\"]|require\(['\"]{package_name}['\"]\)"
+
+# 例: Perl のモジュール
+rg -l "^\s*(use|require)\s+{Module::Name}\b"
 ```
 
 ### D.3 確認観点
@@ -97,6 +112,8 @@ rg -l "from ['\"]{package_name}['\"]|require\(['\"]{package_name}['\"]\)"
 - コードベース内での利用箇所数 (多いほど影響大)
 - 利用している API が breaking changes の対象か
 - 推移的依存 (transitive dependency) のみの更新か直接依存か
+  - 推移的依存のみなら、lock ファイルからそれを直接依存している上位パッケージを特定し、上位パッケージ経由で影響が出るかを評価する
+- 必要なランタイムの最小バージョンが上がった場合、リポジトリが使っているバージョン (`.tool-versions`・Dockerfile・CI の設定など) がそれを満たすか
 - パッケージの性質 (CLI ツール / ビルドツール / ライブラリ) — CLI・ビルドツールは通常 import されず、影響範囲は CI スクリプトや設定ファイルに限定される
 
 ## E. 評価レポートの生成
@@ -128,6 +145,10 @@ rg -l "from ['\"]{package_name}['\"]|require\(['\"]{package_name}['\"]\)"
 
 {release notes / changelog から抽出した breaking changes、なければ「なし」}
 
+### その他の注意点
+
+{deprecation・デフォルト挙動の変更・必要なランタイムの最小バージョンの変更、なければ省略}
+
 ### Security fix
 
 {セキュリティ修正が含まれる場合は CVE 番号や概要、なければ省略}
@@ -137,10 +158,16 @@ rg -l "from ['\"]{package_name}['\"]|require\(['\"]{package_name}['\"]\)"
 - 利用箇所: {N 箇所 / 利用なし / 推移的依存のみ}
 - 影響を受けそうな箇所: {breaking changes の対象 API を使っている箇所、なければ「なし」}
 
+### 参照したリリースノート
+
+- {URL}
+
 </details>
 ````
 
-複数パッケージが同時に更新されている PR (renovate の grouped updates 等) の場合は、`<details>` の中でパッケージごとに「概要」「Breaking changes」「影響範囲」を繰り返す。要約は PR 全体で 1 つにまとめる。
+確認できなかった項目 (取得できなかったリリースノートなど) は「未確認」と書き、確認済みの項目と区別する。読み手が「なし」と「調べていない」を取り違えて、確認せずにマージしないようにするため。
+
+複数パッケージが同時に更新されている PR (renovate の grouped updates 等) の場合は、`<details>` の中で、「概要」から「参照したリリースノート」までの節をパッケージごとに繰り返す。要約は PR 全体で 1 つにまとめる。
 
 ## F. 投稿
 
