@@ -157,7 +157,7 @@ git log <base>..<current> --pretty=format:"%H%n%s%n%b%n---" --reverse
 
 ```markdown
 > [!NOTE]
-> この注意書きが残っているあいだは、Claude が書いた本文を hidekuro が確認しています
+> この注意書きが残っているあいだは、Claude (<モデル名>) が書いた本文を hidekuro が確認しています
 
 ## 概要
 
