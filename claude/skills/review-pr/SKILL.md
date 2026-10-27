@@ -2,6 +2,7 @@
 name: review-pr
 description: >
   プルリクエストのコードレビューを実施する。「PR #xxxx をレビューして」「この PR をレビューして」「コードレビューして」など、PR のレビューが必要な場面では必ずこのスキルを使用すること。コード差分を確認し、バグ・セキュリティ・パフォーマンス・可読性の観点から評価し、指摘を行ごとのコメントにして、指摘の一覧をチャットで確かめてもらってから、送信前の下書きか、選ばれた種別 (Approve / Request changes / Comment) のレビューとして PR に投稿する。renovate / dependabot による依存関係更新 PR の場合は、安全にマージできるかをバージョン差分・changelog・CI・影響範囲の観点から評価する専用フローに分岐する。レビューコメントへの対応には handle-review-comments スキルを使用。未コミットの自分の変更をレビューする場合は self-review スキルを使用。
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/fetch_comments.sh *)
 ---
 
 # PR コードレビュー実施
@@ -26,7 +27,7 @@ PR が存在しない場合は、ユーザーに PR 番号または PR URL の�
 gh pr view {pr_number} --json title,body,author,baseRefName,headRefName,url,additions,deletions,labels
 ```
 
-`url` から読み取れる `{owner}/{repo}` は、5 で JSON を作るときと、レビューを投稿するときに使う。PR が現在のディレクトリとは別のリポジトリにある場合は、`gh pr view`・`gh pr diff`・`gh pr checks` に `-R {owner}/{repo}` を付ける。
+`url` から読み取れる `{owner}/{repo}` は、2.2 で既存のコメントを取るとき・5 で JSON を作るとき・レビューを投稿するときに使う。PR が現在のディレクトリとは別のリポジトリにある場合は、`gh pr view`・`gh pr diff`・`gh pr checks` に `-R {owner}/{repo}` を付ける。
 
 #### 2.2 既存のレビューコメントの確認
 
@@ -34,11 +35,12 @@ gh pr view {pr_number} --json title,body,author,baseRefName,headRefName,url,addi
 
 行に付いたスレッド・レビュー全体の本文・PR の会話のコメントを、1 回の GraphQL で取得する。REST API と `gh pr view` では、解決済みかどうかや、レビューの URL が取れないため。
 
+GraphQL は `gh api graphql` で直接呼ばず、クエリを固定したスクリプトで呼ぶ。`gh api graphql` は書き込みもできるので毎回確認を求める設定にしてあり、このスクリプトだけを frontmatter の `allowed-tools` で確認なしに実行できるようにしているため。`allowed-tools` の許可はこのスキルを呼び出したターンの間だけ効くので、このコマンドは最初のターンのうちに、パスを書き換えずに実行する。
+
 ```bash
-gh api graphql -F owner='{owner}' -F repo='{repo}' -F pr={pr_number} -f query='query($owner:String!,$repo:String!,$pr:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviewThreads(first:100){totalCount nodes{isResolved isOutdated path line originalLine comments(first:50){totalCount nodes{url author{login} body}}}} reviews(first:100){totalCount nodes{url author{login} state body}} comments(first:100){totalCount nodes{url author{login} body}}}}}' --jq '.data.repository.pullRequest | {threadCount: .reviewThreads.totalCount, reviewCount: .reviews.totalCount, commentCount: .comments.totalCount, threads: [.reviewThreads.nodes[] | {path, line: (.line // .originalLine), isResolved, isOutdated, commentCount: .comments.totalCount, comments: [.comments.nodes[] | {url, author: .author.login, body}]}], reviews: [.reviews.nodes[] | select(.body != "") | {url, author: .author.login, state, body}], comments: [.comments.nodes[] | {url, author: .author.login, body}]}'
+${CLAUDE_SKILL_DIR}/scripts/fetch_comments.sh {owner}/{repo} {pr_number}
 ```
 
-- `{owner}` と `{repo}` は gh がカレントディレクトリのリポジトリで埋める。PR が別のリポジトリにあるときは実際の値で埋める
 - 取得の上限は、スレッド・レビュー・会話のコメントが各 100 件、1 スレッドあたりのコメントが 50 件。`threadCount`・`reviewCount`・`commentCount` が上限を超えていたら、5 の報告で取得しきれなかったことを伝える
 
 既存のコメント (解決済みのスレッドも含む) がすでに指摘している問題は、指摘しない。原因と直し方が同じなら、コメントを付けた行や言い回しが違っても同じ指摘とみなす。
