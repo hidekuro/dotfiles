@@ -143,15 +143,17 @@ PR のコードは、テストやビルドも含めて手元で実行しない�
 
 投稿内容は、次の形式の Markdown ファイルとしてスクラッチパッド (なければ一時ディレクトリ) に書き出す。5 で、スクリプトがこのファイルから、レビュー作成 API に渡す JSON を作る。JSON のエスケープの誤りを避け、差分の外の行を投稿前に見つけるため。
 
-````markdown
+```markdown
 {レビュー全体の本文 (4.2)}
 
 <!-- comment path=service.js line=42 -->
+
 {インラインコメントの本文 (4.1)}
 
 <!-- comment path=api.ts start_line=10 line=12 -->
+
 {複数行に付けるインラインコメントの本文}
-````
+```
 
 - 最初の `<!-- comment ... -->` 行より前が、レビュー全体の本文になる
 - `<!-- comment ... -->` 行には、`キー=値` を空白で区切って 1 行で書く。値に空白は使えない
@@ -249,10 +251,10 @@ const result = user?.profile?.email?.toLowerCase() ?? '';
    ```markdown
    **承認可否**: ❌ 修正が必要
 
-   | No. | ファイル:行 | 重要度 | 指摘内容 |
-   |---|---|---|---|
-   | 1 | `service.js:42` | [must] | `user.profile` が null のとき TypeError になります。 |
-   | 2 | `api.ts:10-12` | [nit] | 誤字があります。 |
+   | No. | ファイル:行     | 重要度 | 指摘内容                                             |
+   | --- | --------------- | ------ | ---------------------------------------------------- |
+   | 1   | `service.js:42` | [must] | `user.profile` が null のとき TypeError になります。 |
+   | 2   | `api.ts:10-12`  | [nit]  | 誤字があります。                                     |
    ```
 
    インラインコメントが 0 件のときは、指摘一覧の表の代わりにレビュー全体の本文をそのまま示す。下書きにできないので、GitHub の画面で確かめる機会がないため。
@@ -287,7 +289,22 @@ const result = user?.profile?.email?.toLowerCase() ?? '';
      ```
 
    - `--method POST` は省略・短縮せず、この形で書く。ユーザーの権限設定はこの書き方に一致したときに確認を出すため
-   - 書きかけのレビューがすでにあると、作成は失敗する。そのときは、GitHub の画面で書きかけのレビューを送信するか破棄するようユーザーに伝え、済んだと言われたら同じコマンドで作成し直す
+   - 書きかけのレビューがすでにあると、作成は失敗する。そのときは、次のコマンドで自分の書きかけのレビュー (state が `PENDING`) を探し、ID・本文・インラインコメントの件数をユーザーに示して、破棄してよいかを確かめる。破棄するとユーザーが手で書いたコメントも消え、戻せないため
+
+     ```bash
+     gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews --jq '.[] | select(.state == "PENDING") | {id, body}'
+     ```
+
+     ```bash
+     gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews/{review_id}/comments --jq 'length'
+     ```
+
+   - 破棄の了承を得たら、次のコマンドで書きかけのレビューを削除してから、同じコマンドで作成し直す。GitHub の画面で破棄の操作を探す手間をユーザーにかけないため
+
+     ```bash
+     gh api --method DELETE repos/{owner}/{repo}/pulls/{pr_number}/reviews/{review_id}
+     ```
+
    - 作成した後は、PR の URL を示す。下書きなら、GitHub の「Files changed」画面で内容を確かめてから、Approve / Request changes / Comment のいずれかを選んで送信するよう伝える
 
 5. 投稿をやめると伝えられたら、Markdown ファイルのパスだけを示して終える
