@@ -1,6 +1,7 @@
 ---
 name: handle-review-comments
 description: プルリクエストに付けられたレビューコメントに対応する。「レビューコメントに対応して」「指摘事項を修正して」「レビュー指摘を反映して」など、レビューコメントへの対応が必要な場面では必ずこのスキルを使用すること。コメントの取得・分析・修正実装・返信を行う。PR のレビュー実施には review-pr スキルを使用。
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/fetch_comments.sh *)
 ---
 
 # PR レビューコメント対応
@@ -9,20 +10,24 @@ description: プルリクエストに付けられたレビューコメントに�
 
 ### 1. PR 番号の取得
 
-現在のブランチから PR 番号を自動取得:
+現在のブランチから PR 番号と URL を自動取得:
 
 ```bash
-gh pr view --json number --jq '.number'
+gh pr view --json number,url
 ```
 
 PR が存在しない場合は、ユーザーに PR 番号または PR URL の入力を求めます。
+
+`url` から読み取れる `{owner}/{repo}` は、2 でコメントを取るときと、8 で返信するときに使う。
 
 ### 2. レビューコメントの取得
 
 行に付いたスレッド・レビュー全体の本文・PR の会話のコメントを、1 回の GraphQL で取得する。REST API のレビューコメントには、解決済みかどうかの情報が含まれないため。
 
+GraphQL は `gh api graphql` で直接呼ばず、クエリを固定したスクリプトで呼ぶ。`gh api graphql` は書き込みもできるので毎回確認を求める設定にしてあり、このスクリプトだけを frontmatter の `allowed-tools` で確認なしに実行できるようにしているため。`allowed-tools` の許可はこのスキルを呼び出したターンの間だけ効くので、このコマンドは最初のターンのうちに、パスを書き換えずに実行する。
+
 ```bash
-gh api graphql -F owner='{owner}' -F repo='{repo}' -F pr={pr} -f query='query($owner:String!,$repo:String!,$pr:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviewThreads(first:100){totalCount nodes{id isResolved isOutdated path line originalLine comments(first:50){totalCount nodes{databaseId author{login __typename} body}}}} reviews(first:100){totalCount nodes{author{login __typename} state body}} comments(first:100){totalCount nodes{url author{login __typename} body}}}}}' --jq '.data.repository.pullRequest | {threadCount: .reviewThreads.totalCount, reviewCount: .reviews.totalCount, commentCount: .comments.totalCount, threads: [.reviewThreads.nodes[] | select(.isResolved | not) | {threadId: .id, path, line: (.line // .originalLine), isOutdated, commentCount: .comments.totalCount, comments: [.comments.nodes[] | {id: .databaseId, author: .author.login, type: .author.__typename, body}]}], reviews: [.reviews.nodes[] | select(.body != "") | {author: .author.login, type: .author.__typename, state, body}], comments: [.comments.nodes[] | {url, author: .author.login, type: .author.__typename, body}]}'
+${CLAUDE_SKILL_DIR}/scripts/fetch_comments.sh {owner}/{repo} {pr}
 ```
 
 **重要な注意点**:
@@ -32,7 +37,6 @@ gh api graphql -F owner='{owner}' -F repo='{repo}' -F pr={pr} -f query='query($o
 - スレッド内の返信も読み、すでに返信や合意が済んでいるかを判断する
 - レビュー全体の本文と会話欄のコメントのうち、指摘を含まないもの (承認の一言、CI の結果を知らせる bot のコメントなど) と PR の作者のコメントは、分析の対象から外す。作者のコメントは判断材料として読む
 - 取得の上限はスレッド 100 件、1 スレッドあたりのコメント 50 件、レビュー全体の本文・会話のコメントは各 100 件。`threadCount`・`reviewCount`・`commentCount` が上限を超えていたらユーザーに伝える
-- `{owner}` と `{repo}` は gh がカレントディレクトリのリポジトリで埋める。別リポジトリの PR を URL で指定されたときは実際の値で埋める
 
 ### 3. コメントの分類
 
