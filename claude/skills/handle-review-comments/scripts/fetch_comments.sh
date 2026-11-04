@@ -19,11 +19,12 @@ query($owner: String!, $repo: String!, $pr: Int!) {
           isOutdated
           path
           line
+          startLine
           originalLine
-          comments(first: 50) { totalCount nodes { databaseId author { login __typename } body } }
+          comments(first: 50) { totalCount nodes { databaseId url author { login __typename } body } }
         }
       }
-      reviews(first: 100) { totalCount nodes { author { login __typename } state body } }
+      reviews(first: 100) { totalCount nodes { url author { login __typename } state body } }
       comments(first: 100) { totalCount nodes { url author { login __typename } body } }
     }
   }
@@ -32,7 +33,7 @@ query($owner: String!, $repo: String!, $pr: Int!) {
   threadCount: .reviewThreads.totalCount,
   reviewCount: .reviews.totalCount,
   commentCount: .comments.totalCount,
-  threads: [.reviewThreads.nodes[] | select(.isResolved | not) | {threadId: .id, path, line: (.line // .originalLine), isOutdated, commentCount: .comments.totalCount, comments: [.comments.nodes[] | {id: .databaseId, author: .author.login, type: .author.__typename, body}]}],
-  reviews: [.reviews.nodes[] | select(.body != "") | {author: .author.login, type: .author.__typename, state, body}],
+  threads: [.reviewThreads.nodes[] | select(.isResolved | not) | {threadId: .id, path, line, startLine, originalLine, isOutdated, commentCount: .comments.totalCount, comments: [.comments.nodes[] | {id: .databaseId, url, author: .author.login, type: .author.__typename, body}]}],
+  reviews: [.reviews.nodes[] | select(.body != "") | {url, author: .author.login, type: .author.__typename, state, body}],
   comments: [.comments.nodes[] | {url, author: .author.login, type: .author.__typename, body}]
 }'
