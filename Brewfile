@@ -8,6 +8,7 @@ tap "lucagrulla/tap", trusted: true
 tap "mackerelio/mackerel-agent", trusted: true
 tap "oktadev/tap", "https://github.com/oktadev/homebrew-tap.git", trusted: true
 tap "songmu/tap", trusted: true
+tap "terraform-linters/tap", trusted: true
 brew "ansifilter"
 brew "atlas"
 brew "awscli"
@@ -76,7 +77,6 @@ brew "shellcheck"
 brew "shfmt"
 brew "source-highlight"
 brew "sshuttle"
-brew "tflint"
 brew "tree"
 brew "unbound"
 brew "uv"
@@ -99,4 +99,5 @@ cask "karabiner-elements"
 cask "linearmouse"
 cask "oktadev/tap/okta"
 cask "session-manager-plugin"
+cask "terraform-linters/tap/tflint"
 cask "visual-studio-code"
