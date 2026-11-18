@@ -26,10 +26,15 @@ for link_path in "${SKILLS_DEST}"/*(N@); do
   fi
 done
 
+# 同じ名前のマシン固有のスキルを消さないよう、dotfiles を指すリンク以外が置いてあれば警告して飛ばす
 for skill_path in "${SKILLS_SRC}"/*(N/); do
   skill_name="${skill_path:t}"
-  rm -rf "${SKILLS_DEST}/${skill_name}"
-  ln -s "${skill_path}" "${SKILLS_DEST}/${skill_name}"
+  skill_dest="${SKILLS_DEST}/${skill_name}"
+  if [[ -e "${skill_dest}" || -L "${skill_dest}" ]] && [[ "$(readlink "${skill_dest}")" != "${SKILLS_SRC}/"* ]]; then
+    echo "  Warning: skipped skill ${skill_name}; ~/.claude/skills/${skill_name} already exists and is not a link into dotfiles" >&2
+    continue
+  fi
+  ln -snf "${skill_path}" "${skill_dest}"
   echo "  Linked skill: ${skill_name}"
 done
 
@@ -46,8 +51,14 @@ for link_path in "${HOOKS_DEST}"/*(N@); do
 done
 
 for hook_path in "${HOOKS_SRC}"/*(N.); do
-  ln -snf "${hook_path}" "${HOOKS_DEST}/${hook_path:t}"
-  echo "  Linked hook: ${hook_path:t}"
+  hook_name="${hook_path:t}"
+  hook_dest="${HOOKS_DEST}/${hook_name}"
+  if [[ -e "${hook_dest}" || -L "${hook_dest}" ]] && [[ "$(readlink "${hook_dest}")" != "${HOOKS_SRC}/"* ]]; then
+    echo "  Warning: skipped hook ${hook_name}; ~/.claude/hooks/${hook_name} already exists and is not a link into dotfiles" >&2
+    continue
+  fi
+  ln -snf "${hook_path}" "${hook_dest}"
+  echo "  Linked hook: ${hook_name}"
 done
 
 # settings.json には業務用の permissions やマーケットプレイスも入るので、ファイルごとではなく hooks 節だけを dotfiles の内容で置き換える
